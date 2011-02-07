@@ -3,7 +3,7 @@ package jflowsim.model.numerics.lbm.testcases;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.acm.AcmGrid;
 
-public class TaylorGreenVortexTestCase extends TestCaseCreator {
+public class TaylorGreenVortexTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 

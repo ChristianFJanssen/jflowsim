@@ -17,6 +17,8 @@ public class DisplayStyleManager{
         this.scalarStyles.add(new GridStyle());
         this.scalarStyles.add(new IsolineBlackPlotStyle());
         this.scalarStyles.add(new IsolineColorPlotStyle());
+
+        this.scalarStyles.add(new IntersectionStyle());
         
 
         this.vectorStyles.add(new ArrowBlackPlotStyle());

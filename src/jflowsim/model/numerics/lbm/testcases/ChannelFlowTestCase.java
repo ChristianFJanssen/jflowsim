@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
 
-public class ChannelFlowTestCase extends TestCaseCreator {
+public class ChannelFlowTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
@@ -14,10 +14,6 @@ public class ChannelFlowTestCase extends TestCaseCreator {
         grid.testcase = this.getClass().getSimpleName();
 
         grid.setParameters(0.0002 /* nue_lbm */, 0.0 /* forcingX */, 0.0 /* forcingY */);
-
-        //grid.nue_real = 1.0 * 1.E-3; // kinematische Viskosität (Glycerin)
-        //grid.nue_lbm = 0.01; //
-        //grid.v_scale = grid.nue_real / grid.nue_lbm * grid.nx / grid.getLength();
 
         grid.setVxIn(1.0);
 

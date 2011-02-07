@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.freesurface.LBMFreeSurfaceSolver;
 import jflowsim.model.numerics.lbm.testcases.BreakingDamTestCase;
 import jflowsim.model.numerics.lbm.testcases.FallingDropTestCase;
-import jflowsim.model.numerics.lbm.testcases.TestCaseCreator;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class LBMFreeSurfaceBuilder extends SolverBuilder {
 
@@ -19,7 +19,7 @@ public class LBMFreeSurfaceBuilder extends SolverBuilder {
     }
 
     public UniformGrid createGrid(String testcase) {
-        TestCaseCreator testCaseCreator = testCaseSet.get(testcase);
+        TestCase testCaseCreator = testCaseSet.get(testcase);
 
         return testCaseCreator.getGrid();
     }

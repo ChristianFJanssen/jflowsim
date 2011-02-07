@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureGrid;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureSolver;
 import jflowsim.model.numerics.lbm.testcases.RayleighBenardTestCase;
-import jflowsim.model.numerics.lbm.testcases.TestCaseCreator;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 
 public class LBMTemperatureBuilder extends SolverBuilder{
@@ -19,7 +19,7 @@ public class LBMTemperatureBuilder extends SolverBuilder{
     }
 
     public UniformGrid createGrid(String testcase) {
-        TestCaseCreator testCaseCreator = testCaseSet.get(testcase);
+        TestCase testCaseCreator = testCaseSet.get(testcase);
 
         return testCaseCreator.getGrid();
     }

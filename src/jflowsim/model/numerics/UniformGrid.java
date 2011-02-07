@@ -21,7 +21,7 @@ public abstract class UniformGrid {
     public double real_time; // real in secs
     public double mnups;
     public String testcase;
-    
+
     public int type[];
 
     public UniformGrid(double _length, double _width, double _dx) {

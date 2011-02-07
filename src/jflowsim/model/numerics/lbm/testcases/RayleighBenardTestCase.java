@@ -5,7 +5,7 @@ import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureGrid;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
-public class RayleighBenardTestCase extends TestCaseCreator {
+public class RayleighBenardTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 

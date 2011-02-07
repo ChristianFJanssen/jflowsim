@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.acm.AcmSolver;
 import jflowsim.model.numerics.lbm.testcases.SonjasTestCase;
 import jflowsim.model.numerics.lbm.testcases.TaylorGreenVortexTestCase;
-import jflowsim.model.numerics.lbm.testcases.TestCaseCreator;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class AcmBuilder extends SolverBuilder {
 
@@ -19,7 +19,7 @@ public class AcmBuilder extends SolverBuilder {
     }
 
     public UniformGrid createGrid(String testcase) {
-        TestCaseCreator testCaseCreator = testCaseSet.get(testcase);
+        TestCase testCaseCreator = testCaseSet.get(testcase);
 
         return testCaseCreator.getGrid();
     }

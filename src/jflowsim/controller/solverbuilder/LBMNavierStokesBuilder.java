@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesSolver;
 import jflowsim.model.numerics.lbm.testcases.ChannelFlowTestCase;
 import jflowsim.model.numerics.lbm.testcases.PoiseuilleTestCase;
-import jflowsim.model.numerics.lbm.testcases.TestCaseCreator;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class LBMNavierStokesBuilder extends SolverBuilder {
 
@@ -19,7 +19,7 @@ public class LBMNavierStokesBuilder extends SolverBuilder {
     }
 
     public UniformGrid createGrid(String testcase) {
-        TestCaseCreator testCaseCreator = testCaseSet.get(testcase);
+        TestCase testCaseCreator = testCaseSet.get(testcase);
 
         return testCaseCreator.getGrid();
     }

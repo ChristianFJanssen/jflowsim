@@ -2,13 +2,13 @@ package jflowsim.controller.solverbuilder;
 
 import jflowsim.model.numerics.Solver;
 import jflowsim.model.numerics.UniformGrid;
-import jflowsim.model.numerics.lbm.testcases.TestCaseCreator;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 public abstract class SolverBuilder {
 
-    protected TreeMap<String, TestCaseCreator> testCaseSet = new TreeMap<String, TestCaseCreator>();
+    protected TreeMap<String, TestCase> testCaseSet = new TreeMap<String, TestCase>();
 
     public SolverBuilder(){    }
     

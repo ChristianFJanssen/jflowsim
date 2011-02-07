@@ -5,7 +5,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
 
-public class PoiseuilleTestCase extends TestCaseCreator {
+public class PoiseuilleTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 

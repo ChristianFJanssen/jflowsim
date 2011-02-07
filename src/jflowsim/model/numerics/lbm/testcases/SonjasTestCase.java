@@ -4,7 +4,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.acm.AcmGrid;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
-public class SonjasTestCase extends TestCaseCreator {
+public class SonjasTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 

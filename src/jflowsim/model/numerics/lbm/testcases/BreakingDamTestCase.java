@@ -5,7 +5,7 @@ import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.freesurface.LBMFreeSurfaceGrid;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
-public class BreakingDamTestCase extends TestCaseCreator {
+public class BreakingDamTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
