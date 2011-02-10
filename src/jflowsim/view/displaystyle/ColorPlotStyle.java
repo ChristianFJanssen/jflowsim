@@ -8,8 +8,12 @@ import jflowsim.model.numerics.utilities.Scalar;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 public class ColorPlotStyle extends DisplayStyle {
+
+    private DecimalFormat df = new DecimalFormat("0.000");
 
     public String[] getScalars() {
         Field[] fields = Scalar.class.getDeclaredFields();
@@ -21,8 +25,12 @@ public class ColorPlotStyle extends DisplayStyle {
         return str;
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
         if (enabled) {
+
+            hud.drawText("Min = " + df.format(min));
+            hud.drawText("Max = " + df.format(max));
+
             this.tmp_min = min;
             this.tmp_max = max;
 
@@ -46,16 +54,15 @@ public class ColorPlotStyle extends DisplayStyle {
 
                     double scalar = grid.getScalar(x, y, scalar_type);
 
-                    if (scalar < min) {
-                        min = scalar;
-                    }
-                    if (scalar > max) {
-                        max = scalar;
-                    }
-
                     if (grid.getType(x, y) == GridNodeType.SOLID) {
                         c = Color.BLUE;
                     } else {
+                        if (scalar < min) {
+                            min = scalar;
+                        }
+                        if (scalar > max) {
+                            max = scalar;
+                        }
                         c = ColorValue.getColor4Value(tmp_min, tmp_max, scalar);
                     }
                     g.setColor(c);

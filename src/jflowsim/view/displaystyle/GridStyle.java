@@ -8,6 +8,7 @@ import jflowsim.view.utilities.ColorValue;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.lang.reflect.Field;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 public class GridStyle extends DisplayStyle {
 
@@ -21,7 +22,7 @@ public class GridStyle extends DisplayStyle {
         return str;
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
 
         if (enabled) {
 
@@ -53,16 +54,17 @@ public class GridStyle extends DisplayStyle {
                         c = ColorValue.getColor4Value(grid.getType(x, y));
                     } else {
                         double scalar = grid.getScalar(x, y, scalar_type);
-                        if (scalar < min) {
+
+
+                        if (grid.getType(x, y) == GridNodeType.SOLID) {
+                            c = Color.BLUE;
+                        } else {
+                                                    if (scalar < min) {
                             min = scalar;
                         }
                         if (scalar > max) {
                             max = scalar;
                         }
-
-                        if (grid.getType(x, y) == GridNodeType.SOLID) {
-                            c = Color.BLUE;
-                        } else {
                             c = ColorValue.getColor4Value(tmp_min, tmp_max, scalar);
                         }
                     }

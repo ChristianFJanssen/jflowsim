@@ -4,7 +4,6 @@ import jflowsim.view.utilities.ColorValue;
 import jflowsim.model.algebra.WorldViewTransformator2D;
 import jflowsim.model.geometry2d.Line2D;
 import jflowsim.model.geometry2d.Point2D;
-import jflowsim.model.numerics.utilities.GridNodeType;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.utilities.Scalar;
 import jflowsim.view.graphics.GraphicLine;
@@ -12,6 +11,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 public class IsolineColorPlotStyle extends DisplayStyle {
 
@@ -25,7 +25,7 @@ public class IsolineColorPlotStyle extends DisplayStyle {
         return str;
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
 
         if (enabled) {
 

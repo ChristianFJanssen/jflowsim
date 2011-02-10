@@ -72,7 +72,7 @@ public class LBMTemperatureSolver extends LBMSolver {
 
                     if (myrank == 0) {
                         if (grid.timestep % grid.updateInterval == 0) {
-                            grid.real_time = grid.timestep * grid.nue_lbm / grid.nue_real * Math.pow(grid.getLength() / grid.nx, 2.0);
+                            grid.real_time = grid.timestep * grid.nue_lbm / grid.viscosity * Math.pow(grid.getLength() / grid.nx, 2.0);
                             grid.mnups = (grid.nx * grid.ny) * counter / ((System.currentTimeMillis() - timer)) / 1000;
 
                             solver.update();

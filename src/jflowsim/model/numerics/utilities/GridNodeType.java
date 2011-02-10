@@ -12,4 +12,6 @@ public interface GridNodeType {
     public static final int SOLIDS     = 7;
     public static final int SOLIDE     = 8;
     public static final int SOLIDW     = 9;
+    public static final int VELO       = 10;
+    public static final int PRESS      = 11;
 }

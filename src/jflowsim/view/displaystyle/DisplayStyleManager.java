@@ -4,7 +4,7 @@ import jflowsim.model.algebra.WorldViewTransformator2D;
 import jflowsim.model.numerics.UniformGrid;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Vector;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 public class DisplayStyleManager{   
 
@@ -14,12 +14,10 @@ public class DisplayStyleManager{
 
     public DisplayStyleManager(double sliderscale){
         this.scalarStyles.add(new ColorPlotStyle());
+        this.scalarStyles.add(new IntersectionStyle());
         this.scalarStyles.add(new GridStyle());
         this.scalarStyles.add(new IsolineBlackPlotStyle());
-        this.scalarStyles.add(new IsolineColorPlotStyle());
-
-        this.scalarStyles.add(new IntersectionStyle());
-        
+        this.scalarStyles.add(new IsolineColorPlotStyle());        
 
         this.vectorStyles.add(new ArrowBlackPlotStyle());
         this.vectorStyles.add(new ArrowColorPlotStyle());
@@ -56,15 +54,15 @@ public class DisplayStyleManager{
         return vectorStyles;
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
         // first paint the scalar styles
         for(DisplayStyle style : scalarStyles){
-            style.paint(g, trafo, grid);
+            style.paint(g, trafo, grid, hud);
         }
 
         // second paint the vector styles
         for(DisplayStyle style : vectorStyles){
-            style.paint(g, trafo, grid);
+            style.paint(g, trafo, grid, hud);
         }
     }
 }

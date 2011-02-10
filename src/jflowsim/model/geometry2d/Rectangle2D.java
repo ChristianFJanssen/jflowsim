@@ -186,8 +186,8 @@ public class Rectangle2D extends Geometry2D {
         int x2 = grid.transCoord2XIndex(maxX, Rounding.FLOOR);
         int y2 = grid.transCoord2YIndex(maxY, Rounding.FLOOR);
 
-        for (int x = x1; x < x2; x++) {
-            for (int y = y1; y < y2; y++) {
+        for (int x = x1; x <= x2; x++) {
+            for (int y = y1; y <= y2; y++) {
                 grid.setType(x,y,GridNodeType.SOLID);
             }
         }

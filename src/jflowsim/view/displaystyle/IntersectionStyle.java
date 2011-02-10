@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import jflowsim.model.algebra.WorldViewTransformator2D;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.utilities.GridNodeType;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 import jflowsim.view.utilities.ColorValue;
 
 public class IntersectionStyle extends DisplayStyle {
@@ -21,7 +22,7 @@ public class IntersectionStyle extends DisplayStyle {
         return str;
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
         if (enabled) {
             this.tmp_min = min;
             this.tmp_max = max;
@@ -46,16 +47,17 @@ public class IntersectionStyle extends DisplayStyle {
 
                     double scalar = grid.getScalar(x, y, scalar_type);
 
-                    if (scalar < min) {
+
+
+                    if (grid.getType(x, y) == GridNodeType.SOLID) {
+                        c = Color.BLUE;
+                    } else {
+                                            if (scalar < min) {
                         min = scalar;
                     }
                     if (scalar > max) {
                         max = scalar;
                     }
-
-                    if (grid.getType(x, y) == GridNodeType.SOLID) {
-                        c = Color.BLUE;
-                    } else {
                         c = ColorValue.getColor4Value(tmp_min, tmp_max, scalar);
                     }
                     g.setColor(c);
@@ -79,7 +81,7 @@ public class IntersectionStyle extends DisplayStyle {
 
             double range = tmp_max - 0.0;
 
-            System.out.println("Min,max,range: " + tmp_min + " " + tmp_max + " " + range);
+            //System.out.println("Min,max,range: " + tmp_min + " " + tmp_max + " " + range);
 
 
 

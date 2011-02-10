@@ -7,7 +7,7 @@ import jflowsim.model.numerics.lbm.LBMNoSlipBC;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
 
-public class DrivenCavityTestCase extends TestCase {
+public class CouetteFlowTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
@@ -23,12 +23,10 @@ public class DrivenCavityTestCase extends TestCase {
 
         this.initFluid(grid);
 
-        grid.addBC(new LBMMovingWallBC(grid, BoundaryCondition.NORTH, 0.1, 0.0));
-        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.EAST));
-        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.WEST));
-        //grid.addBC(new LBMVelocityBC(grid, BoundaryCondition.NORTH, 0.01, 0.0));
-        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
+        grid.periodicX = true;
 
+        grid.addBC(new LBMMovingWallBC(grid, BoundaryCondition.NORTH, 0.1, 0.0));
+        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
 
         // Initial conditions
         double[] feq = new double[9];

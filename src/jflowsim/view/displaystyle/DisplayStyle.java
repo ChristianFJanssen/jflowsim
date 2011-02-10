@@ -3,6 +3,7 @@ package jflowsim.view.displaystyle;
 import jflowsim.model.algebra.WorldViewTransformator2D;
 import jflowsim.model.numerics.UniformGrid;
 import java.awt.Graphics;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 
 public abstract class DisplayStyle {
@@ -25,6 +26,6 @@ public abstract class DisplayStyle {
         this.scalar_type = scalar_type;
     }
     
-    public abstract void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid);
+    public abstract void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud);
 
 }

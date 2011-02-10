@@ -1,18 +1,16 @@
-package jflowsim.model.numerics.lbm.navierstokes;
+package jflowsim.model.numerics.lbm.shallowwater;
 
-import java.util.ArrayList;
-import jflowsim.model.numerics.BoundaryCondition;
 import jflowsim.model.numerics.lbm.LBMUniformGrid;
 import jflowsim.model.numerics.utilities.Scalar;
 import jflowsim.view.headupdisplay.HeadUpDisplay;
 
-public class LBMNavierStokesGrid extends LBMUniformGrid {
+public class LBMShallowWaterGrid extends LBMUniformGrid {
 
-    public LBMNavierStokesGrid(double _length, double _width, double _dx) {
+    public LBMShallowWaterGrid(double _length, double _width, double _dx) {
         super(_length, _width, _dx);
     }
 
-    public LBMNavierStokesGrid(double _length, double _width, int _nx, int _ny) {
+    public LBMShallowWaterGrid(double _length, double _width, int _nx, int _ny) {
         super(_length, _width, _nx, _ny);
     }
 
@@ -21,7 +19,7 @@ public class LBMNavierStokesGrid extends LBMUniformGrid {
         ftemp = new double[nx * ny * 9];
         type = new int[nx * ny];
 
-        System.out.println("LBMNodefreeGrid::allocateMemoery() nx:" + nx + " ny:" + ny + " - " + nx * ny);
+        System.out.println("LBMShallowWaterGrid::allocateMemoery() nx:" + nx + " ny:" + ny + " - " + nx * ny);
     }
 
     public double getScalar(int x, int y, int type) {
@@ -31,7 +29,7 @@ public class LBMNavierStokesGrid extends LBMUniformGrid {
         } else if (type == Scalar.V_Y) {
             return getVeloY(x, y);
         } else if (type == Scalar.V) {
-            return Math.sqrt(Math.pow(getVeloX(x, y), 2.0) + Math.pow(getVeloY(x, y), 2.0)) / getDensity(x, y);
+            return Math.sqrt(Math.pow(getVeloX(x, y), 2.0) + Math.pow(getVeloY(x, y), 2.0));
         } else if (type == Scalar.RHO) {
             return getDensity(x, y);
         } else if (type == Scalar.GRID_TYPE) {
@@ -51,6 +49,6 @@ public class LBMNavierStokesGrid extends LBMUniformGrid {
         hud.drawText("Time step" + this.dt );
         hud.drawText("LBM viscosity: " + this.nue_lbm);
         hud.drawText("LBM forcing: " + this.forcingX1 + "," + this.forcingX2);
-        hud.drawText("v_in_lbm: " + v_in_lbm);
+        hud.drawText("V scale: " + this.v_scale);
     }
 }

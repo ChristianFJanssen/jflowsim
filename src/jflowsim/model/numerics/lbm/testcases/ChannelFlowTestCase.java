@@ -1,9 +1,13 @@
 package jflowsim.model.numerics.lbm.testcases;
 
+import jflowsim.model.numerics.BoundaryCondition;
 import jflowsim.model.numerics.utilities.GridNodeType;
 import jflowsim.model.numerics.UniformGrid;
+import jflowsim.model.numerics.lbm.LBMNoSlipBC;
+import jflowsim.model.numerics.lbm.LBMPressureBC;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
+import jflowsim.model.numerics.lbm.LBMVelocityBC;
 
 public class ChannelFlowTestCase extends TestCase {
 
@@ -13,29 +17,18 @@ public class ChannelFlowTestCase extends TestCase {
 
         grid.testcase = this.getClass().getSimpleName();
 
-        grid.setParameters(0.0002 /* nue_lbm */, 0.0 /* forcingX */, 0.0 /* forcingY */);
+        grid.setGravity(0.0, 0.0 /* m/s^2 */);
+        grid.setViscosity(0.000001 /* m^2/s */);
+        grid.setTimeStep(0.0001 /* s */);
 
-        grid.setVxIn(1.0);
+        grid.updateLBParameters();
 
-
-
-        for (int i = 0; i < grid.nx * grid.ny; i++) {
-            grid.type[i] = GridNodeType.FLUID;
-        }
-
-        // Boundary conditions
-        for (int x = 0; x < grid.nx; x++) {
-            grid.type[x] = GridNodeType.BOUNDARY;
-            grid.type[x + (grid.ny - 1) * grid.nx] = GridNodeType.BOUNDARY;
-        }
-        for (int y = 0; y < grid.ny; y++) {
-
-            grid.type[0 + y * grid.nx] = GridNodeType.BOUNDARY;
-            grid.type[1 + y * grid.nx] = GridNodeType.BOUNDARY;
-            grid.type[2 + y * grid.nx] = GridNodeType.BOUNDARY;
-            grid.type[grid.nx - 1 + y * grid.nx] = GridNodeType.BOUNDARY;
-        }
-
+        this.initFluid(grid);
+       
+        grid.addBC(new LBMPressureBC(grid, BoundaryCondition.EAST, 1.0));
+        grid.addBC(new LBMVelocityBC(grid, BoundaryCondition.WEST, 0.05, 0.0));
+        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.NORTH));
+        grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
 
 
         // Initial conditions

@@ -57,10 +57,19 @@ public class LBMNavierStokesSolver extends LBMSolver {
                         counter++;
                     }
 
+
                     this.collisionFCM(s_nu);
+                    //this.collisionMRT(s_nu);
+                    //this.collision(s_nu);
+
                     this.addForcing();
+
                     this.propagate();
-                    this.applyBCs();
+
+                    //this.applyBCs();
+                    if (myrank == 0) {
+                        this.applyBCsNEW();
+                    }
                     this.periodicBCs();
 
                     barrier.await();
@@ -68,15 +77,22 @@ public class LBMNavierStokesSolver extends LBMSolver {
                     if (myrank == 0) {
                         if (grid.timestep % grid.updateInterval == 0) {
 
-                            grid.real_time = grid.timestep * grid.nue_lbm / grid.nue_real * Math.pow(grid.getLength() / grid.nx, 2.0);
-                            grid.mnups = (grid.nx * grid.ny) * counter / ((System.currentTimeMillis() - timer)) / 1000.0;
+                            long timespan = ((System.currentTimeMillis() - timer));
 
-                            solver.update();
+                            if (timespan > 0) {
+
+                                grid.real_time = grid.timestep * grid.nue_lbm / grid.viscosity * Math.pow(grid.getLength() / grid.nx, 2.0);
+                                grid.mnups = (grid.nx * grid.ny) * counter / timespan / 1000.0;
+
+                                solver.update();
+                            }
 
                             if ((System.currentTimeMillis() - timer) > 2000) {
                                 timer = System.currentTimeMillis();
                                 counter = 0;
                             }
+
+                            //grid.adjustMachNumber(0.1);
                         }
                     }
 
@@ -88,6 +104,7 @@ public class LBMNavierStokesSolver extends LBMSolver {
                 }
 
             } catch (Exception ex) {
+                System.out.println("OVERALL EXCEPTION " + ex);
                 return;
             }
         }

@@ -8,6 +8,7 @@ import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.utilities.Scalar;
 import java.awt.Color;
 import java.awt.Graphics;
+import jflowsim.view.headupdisplay.HeadUpDisplay;
 
 public class ArrowColorPlotStyle extends DisplayStyle {
 
@@ -17,7 +18,7 @@ public class ArrowColorPlotStyle extends DisplayStyle {
         return new String[0];
     }
 
-    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid) {
+    public void paint(Graphics g, WorldViewTransformator2D trafo, UniformGrid grid, HeadUpDisplay hud) {
 
         if (enabled) {
 

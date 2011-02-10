@@ -93,4 +93,36 @@ public class LbEQ {
         g[3] = c1o6 * T * (1. + 3. * vy);
         g[4] = c1o6 * T * (1. - 3. * vy);
     }
+
+    public static void getBGKEquilibriumShallowWater(double h, double vx, double vy, double feq[], double v_scale, double gravity) {
+
+        // Normierung
+//        vx = vx * v_scale / h;
+//        vy = vy * v_scale / h;
+
+        vx = vx * v_scale;
+        vy = vy * v_scale;
+
+        double hdurchE = h / v_scale;
+        double hdurchEE = h / v_scale / v_scale;
+        // Gleichgewichtsverteilungen berechnen
+        double square = hdurchEE * (vx * vx + vy * vy);
+        double dummy = 1. / 6. * gravity * hdurchE * hdurchE;
+
+        feq[LbEQ.ZERO] = h - 5.0 * dummy - 2. / 3. * square;
+        feq[LbEQ.E] = dummy + 1. / 3. * hdurchE * vx + 0.5 * hdurchEE * vx * vx - 1. / 6. * square;
+        feq[LbEQ.W] = feq[LbEQ.E] - 2. / 3. * hdurchE * vx;
+
+        feq[LbEQ.N] = dummy + 1. / 3. * hdurchE * vy + 0.5 * hdurchEE * vy * vy - 1. / 6. * square;
+        feq[LbEQ.S] = feq[LbEQ.N] - 2. / 3. * hdurchE * vy;
+
+        dummy *= 0.25;
+        double produkt = vx + vy;
+        feq[LbEQ.NE] = dummy + 1. / 12. * hdurchE * produkt + 0.125 * hdurchEE * produkt * produkt - 1. / 24. * square;
+        feq[LbEQ.SW] = feq[LbEQ.NE] - 1. / 6. * hdurchE * produkt;
+
+        produkt = -vx + vy;
+        feq[LbEQ.NW] = dummy + 1. / 12. * hdurchE * produkt + 0.125 * hdurchEE * produkt * produkt - 1. / 24. * square;
+        feq[LbEQ.SE] = feq[LbEQ.NW] - 1. / 6. * hdurchE * produkt;
+    }
 }

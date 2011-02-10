@@ -13,7 +13,7 @@ public class FallingDropTestCase extends TestCase {
 
         grid.testcase = this.getClass().getSimpleName();
 
-        grid.setParameters(0.05 /* nue_lbm */, 0.0 /* forcingX */, -0.0002 /* forcingY */);
+        grid.setLBParameters(0.05 /* nue_lbm */, 0.0 /* forcingX */, -0.0002 /* forcingY */);
 
         for (int i = 0; i < grid.nx * grid.ny; i++) {
             grid.type[i] = GridNodeType.GAS;
@@ -69,7 +69,7 @@ public class FallingDropTestCase extends TestCase {
             grid.type[grid.nx - 1 + y * grid.nx] = GridNodeType.BOUNDARY;
         }
 
-        grid.v_scale = grid.nue_real / grid.nue_lbm * grid.nx / grid.getLength();
+        grid.v_scale = grid.viscosity / grid.nue_lbm * grid.nx / grid.getLength();
 
 
         for (int i = 0; i < grid.nx; i++) {

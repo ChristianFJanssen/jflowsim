@@ -4,6 +4,7 @@ import jflowsim.model.numerics.Solver;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
 import jflowsim.model.numerics.utilities.GridNodeType;
 import java.util.concurrent.CyclicBarrier;
+import jflowsim.model.numerics.BoundaryCondition;
 
 /* ======================================================================================= */
 /* ======================================================================================= */
@@ -27,139 +28,80 @@ public abstract class LBMSolverThread extends Thread {
 
         startX = myrank * grid.nx / num_of_threads;
         endX = (myrank + 1) * grid.nx / num_of_threads;
+
+        System.out.println(startX + " " + endX);
     }
+
 
     /* ======================================================================================= */
-    protected void applyBCs() {
+    protected void applyBCsNEW() {
+        LBMUniformGrid myGrid = (LBMUniformGrid) grid;
 
-        double feq[] = new double[9];
-        double vx, vy;
-        int nodeIndex = 0;
-
-        LBMNavierStokesGrid myGrid = (LBMNavierStokesGrid) grid;
-
-        if (myrank == 0 && false) {
-
-            for (int j = 0; j < grid.ny; j++) {
-                double uakt = 4. * myGrid.v_in_lbm * (0.25 - Math.pow((0.0 + grid.ny) * 0.5 / (grid.ny - 0.0) - (double) (j) / (grid.ny - 0.0), 2.));
-
-                vx = uakt;
-                vy = 0.;
-
-                LbEQ.getBGKEquilibrium(myGrid.getDensity(0, j), vx, vy, feq);
-
-                nodeIndex = (0 + j * grid.nx) * 9;
-
-                for (int dir = 0; dir < 9; dir++) {
-                    myGrid.f[nodeIndex + dir] = feq[dir];
-                }//
-            }
+        for (BoundaryCondition bc : myGrid.bcList) {
+            bc.apply();
+            //System.out.println(bc.getClass().getSimpleName() + "...DONE");
         }
 
-        //right boundary - Auslass als Druckrand mit rho = 1
-        if (myrank == num_of_threads - 1 && false) {
-            for (int dir = 1; dir < 9; dir++) {
-                if (LbEQ.ex[dir] == -1) {
-                    for (int j = 0; j < grid.ny; j++) {
-
-                        nodeIndex = (grid.nx - 1 + j * grid.nx) * 9;
-
-                        // feq's
-                        vx = myGrid.getVeloX(grid.nx - 1, j);
-                        vy = myGrid.getVeloY(grid.nx - 1, j);
-                        LbEQ.getBGKEquilibrium(1.0, vx, vy, feq);
-
-                        for (int fdir = 0; fdir < 9; fdir++) {
-                            myGrid.f[nodeIndex + fdir] = feq[fdir];
-                        }//
-
-//
-//                        for (int fdir = 0; fdir < 9; fdir++) {
-//                            myGrid.f[nodeIndex + fdir] = myGrid.f[nodeIndex + fdir - 9];
-//                        }
-
-                        //myGrid.getDensity(grid.nx-1,j);
-
-
-                        // anti-bounce-back
-                        //myGrid.f[nodeIndex + dir] = -myGrid.ftemp[nodeIndex + LbEQ.invdir[dir]] + feq[LbEQ.invdir[dir]] + feq[dir];
-                    }
-                }
-            }//
-        }
-        //top-Boundary Bounce Back
-        for (int dir = 1; dir < 9; dir++) {
-            if (LbEQ.ey[dir] == -1) {
-                for (int i = startX; i < endX; i++) {
-
-                    nodeIndex = (i + (grid.ny - 1) * grid.nx) * 9;
-
-                    myGrid.f[nodeIndex + dir] = myGrid.ftemp[nodeIndex + LbEQ.invdir[dir]];
-                }
-            }
-        }//
-        //bottom boundary Bounce Back
-        for (int dir = 1; dir < 9; dir++) {
-            if (LbEQ.ey[dir] == 1) {
-                for (int i = startX; i < endX; i++) {
-
-                    myGrid.f[i * 9 + dir] = myGrid.ftemp[i * 9 + LbEQ.invdir[dir]];
-                }
-            }
-        }
     }
-
     /* ======================================================================================= */
     protected void collision(double s_nu) {
         double[] feq = new double[9];
         int nodeIndex = -1;
 
-        for (int i = startX; i < endX; i++) {
-            for (int j = 0; j < grid.ny; j++) {
+        try {
 
-                nodeIndex = (i + j * grid.nx) * 9;
+            for (int i = startX; i < endX; i++) {
+                for (int j = 0; j < grid.ny; j++) {
 
-                if (grid.getType(i, j) != GridNodeType.SOLID) {
+                    nodeIndex = (i + j * grid.nx) * 9;
 
-                    double dens = grid.f[nodeIndex + LbEQ.ZERO]
-                            + grid.f[nodeIndex + LbEQ.E]
-                            + grid.f[nodeIndex + LbEQ.W]
-                            + grid.f[nodeIndex + LbEQ.N]
-                            + grid.f[nodeIndex + LbEQ.S]
-                            + grid.f[nodeIndex + LbEQ.NE]
-                            + grid.f[nodeIndex + LbEQ.SW]
-                            + grid.f[nodeIndex + LbEQ.NW]
-                            + grid.f[nodeIndex + LbEQ.SE];
+                    if (grid.getType(i, j) != GridNodeType.SOLID) {
 
-                    double vx = (grid.f[nodeIndex + LbEQ.E]
-                            - grid.f[nodeIndex + LbEQ.W]
-                            + grid.f[nodeIndex + LbEQ.NE]
-                            - grid.f[nodeIndex + LbEQ.SW]
-                            + grid.f[nodeIndex + LbEQ.SE]
-                            - grid.f[nodeIndex + LbEQ.NW]) / dens;
+                        double dens = grid.f[nodeIndex + LbEQ.ZERO]
+                                + grid.f[nodeIndex + LbEQ.E]
+                                + grid.f[nodeIndex + LbEQ.W]
+                                + grid.f[nodeIndex + LbEQ.N]
+                                + grid.f[nodeIndex + LbEQ.S]
+                                + grid.f[nodeIndex + LbEQ.NE]
+                                + grid.f[nodeIndex + LbEQ.SW]
+                                + grid.f[nodeIndex + LbEQ.NW]
+                                + grid.f[nodeIndex + LbEQ.SE];
+
+                        double vx = (grid.f[nodeIndex + LbEQ.E]
+                                - grid.f[nodeIndex + LbEQ.W]
+                                + grid.f[nodeIndex + LbEQ.NE]
+                                - grid.f[nodeIndex + LbEQ.SW]
+                                + grid.f[nodeIndex + LbEQ.SE]
+                                - grid.f[nodeIndex + LbEQ.NW]) / dens;
 
 
-                    double vy = (+grid.f[nodeIndex + LbEQ.N]
-                            - grid.f[nodeIndex + LbEQ.S]
-                            + grid.f[nodeIndex + LbEQ.NE]
-                            + grid.f[nodeIndex + LbEQ.NW]
-                            - grid.f[nodeIndex + LbEQ.SE]
-                            - grid.f[nodeIndex + LbEQ.SW]) / dens;
+                        double vy = (+grid.f[nodeIndex + LbEQ.N]
+                                - grid.f[nodeIndex + LbEQ.S]
+                                + grid.f[nodeIndex + LbEQ.NE]
+                                + grid.f[nodeIndex + LbEQ.NW]
+                                - grid.f[nodeIndex + LbEQ.SE]
+                                - grid.f[nodeIndex + LbEQ.SW]) / dens;
 
-                    LbEQ.getBGKEquilibrium(dens, vx, vy, feq);
+                        LbEQ.getBGKEquilibrium(dens, vx, vy, feq);
 
-                    for (int dir = 0; dir < 9; dir++) {
-                        grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + dir] - s_nu * (grid.f[nodeIndex + dir] - feq[dir]);
+                        for (int dir = 0; dir < 9; dir++) {
+                            grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + dir] - s_nu * (grid.f[nodeIndex + dir] - feq[dir]);
+                        }
+
+                    } else {
+                        //nodal bounce back
+                        for (int dir = 1; dir < 9; dir++) {
+                            grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + LbEQ.invdir[dir]];
+                        }
+
                     }
-
-                } else {
-                    //nodal bounce back
-                    for (int dir = 1; dir < 9; dir++) {
-                        grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + LbEQ.invdir[dir]];
-                    }
-
                 }
             }
+
+        } catch (Exception ex) {
+            System.out.println("Collision " + ex);
+            return;
+
         }
     }
     /* ======================================================================================= */
@@ -245,8 +187,9 @@ public abstract class LBMSolverThread extends Thread {
 
     /* ======================================================================================= */
     protected void collisionFCM(double s_nu) {
-        double[] feq = new double[9];
         int nodeIndex = -1;
+
+        //try {
 
         for (int i = startX; i < endX; i++) {
             for (int j = 0; j < grid.ny; j++) {
@@ -322,6 +265,11 @@ public abstract class LBMSolverThread extends Thread {
                 }
             }
         }
+
+//        } catch (Exception ex) {
+//            System.out.println(ex);
+//            return;
+//        }
     }
 
     protected void addForcing() {

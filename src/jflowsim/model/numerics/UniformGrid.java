@@ -1,5 +1,6 @@
 package jflowsim.model.numerics;
 
+import java.util.ArrayList;
 import jflowsim.model.numerics.utilities.GridNodeType;
 import jflowsim.model.ModelManager;
 import jflowsim.model.geometry2d.Geometry2D;
@@ -10,18 +11,19 @@ public abstract class UniformGrid {
 
     public int nx, ny;
     private double minX, minY, maxX, maxY;
-    public boolean periodicX, periodicY;
+    public boolean periodicX=false, periodicY=false;
     private double length, width; // PRIVATE, damit Zugriff nur ueber getter/setter zwecks min/max-update
     public double dx, dt;
     public double v_scale;
-    public double nue_real;
+    public double viscosity;
+    public double gravityX, gravityY;
     public double gravity = 9.81;
     public int updateInterval = 25;
     public int timestep;
     public double real_time; // real in secs
     public double mnups;
     public String testcase;
-
+    public ArrayList<BoundaryCondition> bcList = new ArrayList<BoundaryCondition>();
     public int type[];
 
     public UniformGrid(double _length, double _width, double _dx) {
@@ -64,6 +66,10 @@ public abstract class UniformGrid {
         for (Geometry2D geo : model.getGeometryList()) {
             geo.map2Grid(this);
         }
+    }
+
+    public void addBC(BoundaryCondition bc) {
+        bcList.add(bc);
     }
 
     public void updateHeadUpDisplay(HeadUpDisplay hud) {
@@ -126,19 +132,19 @@ public abstract class UniformGrid {
 
     public int transCoord2XIndex(double x, int mode) {
         int ix = Rounding.round(x / dx + 1.0, mode);
-        if (ix < 1) {
-            ix = 1;
+        if (ix < 0) {
+            ix = 0;
         }
-        if (ix > nx - 2) {
-            ix = nx - 2;
+        if (ix > nx - 1) {
+            ix = nx - 1;
         }
         return ix;
     }
 
     public int transCoord2YIndex(double y, int mode) {
         int iy = Rounding.round(y / dx + 1.0, mode);
-        if (iy < 1) {
-            iy = 1;
+        if (iy < 0) {
+            iy = 0;
         }
         if (iy > ny - 1) {
             iy = ny - 1;
@@ -160,5 +166,18 @@ public abstract class UniformGrid {
 
     public void setType(int x, int y, int type) {
         this.type[y * this.nx + x] = type;
+    }
+
+    public void setViscosity(double _viscosity) {
+        this.viscosity = _viscosity;
+    }
+
+    public void setGravity(double _gravityX, double _gravityY) {
+        this.gravityX = _gravityX;
+        this.gravityY = _gravityY;
+    }
+
+    public void setTimeStep(double _dt) {
+        this.dt = _dt;
     }
 }
