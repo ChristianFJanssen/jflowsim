@@ -8,13 +8,13 @@ import jflowsim.model.ModelManager;
 import jflowsim.model.numerics.lbm.LBMUniformGrid;
 import jflowsim.view.img.ImageUtilities;
 
-public class ConfigDialog extends javax.swing.JDialog implements WindowListener{
+public class ConfigDialog extends javax.swing.JDialog implements WindowListener {
 
     private boolean validation = true;
     private ModelManager model;
 
     /** Creates new form ConfigDialog */
-    public ConfigDialog(ModelManager model, java.awt.Frame parent){
+    public ConfigDialog(ModelManager model, java.awt.Frame parent) {
         super(parent, false);
         this.model = model;
 
@@ -51,55 +51,61 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener{
         return value;
     }
 
-
-    private void setParameterFromGrid2UI(){
-        gravity_x_tf.setText(String.valueOf(model.grid.gravityX));
-        gravity_y_tf.setText(String.valueOf(model.grid.gravityY));
-        viscosity_tf.setText(String.valueOf(model.grid.viscosity));
-        delta_t_tf.setText(String.valueOf(model.grid.dt));
-        
-        length_tf.setText(String.valueOf(model.grid.getLength()));
-        width_tf.setText(String.valueOf(model.grid.getWidth()));
-        delta_x_tf.setText(String.valueOf(model.grid.dx));
-        
-
-        updateI_tf.setText(String.valueOf(model.grid.updateInterval));
-        //writerU_tf
+    public void update(){
+        this.setParameterFromGrid2UI();
     }
 
+    private void setParameterFromGrid2UI() {
+        if (model.hasGrid()) {
+            gravity_x_tf.setText(String.valueOf(model.grid.gravityX));
+            gravity_y_tf.setText(String.valueOf(model.grid.gravityY));
+            viscosity_tf.setText(String.valueOf(model.grid.viscosity));
+            delta_t_tf.setText(String.valueOf(model.grid.dt));
 
-    private boolean applyParameter() {        
+            length_tf.setText(String.valueOf(model.grid.getLength()));
+            width_tf.setText(String.valueOf(model.grid.getWidth()));
+            delta_x_tf.setText(String.valueOf(model.grid.dx));
+
+
+            updateI_tf.setText(String.valueOf(model.grid.updateInterval));
+            //writerU_tf
+        }
+    }
+
+    private boolean applyParameter() {
 
         validation = true;
-        
-        double gravity_x = getDoubleValueFromTextField(gravity_x_tf);
-        double gravity_y = getDoubleValueFromTextField(gravity_y_tf);
-        double viscosity = getDoubleValueFromTextField(viscosity_tf);
-        double delta_t = getDoubleValueFromTextField(delta_t_tf);        
 
-        double length = getDoubleValueFromTextField(length_tf);
-        double width = getDoubleValueFromTextField(width_tf);
-        double delta_x = getDoubleValueFromTextField(delta_x_tf);        
+        if (model.hasGrid()) {
 
-        int update_interval = model.grid.updateInterval = getIntegerValueFromTextField(updateI_tf);
-        int writer_update = getIntegerValueFromTextField(writerU_tf);
+            double gravity_x = getDoubleValueFromTextField(gravity_x_tf);
+            double gravity_y = getDoubleValueFromTextField(gravity_y_tf);
+            double viscosity = getDoubleValueFromTextField(viscosity_tf);
+            double delta_t = getDoubleValueFromTextField(delta_t_tf);
 
+            double length = getDoubleValueFromTextField(length_tf);
+            double width = getDoubleValueFromTextField(width_tf);
+            double delta_x = getDoubleValueFromTextField(delta_x_tf);
 
-        if(validation){
-            model.grid.setGravity(gravity_x, gravity_y);
-            model.grid.setViscosity(viscosity);
-            model.grid.setTimeStep(delta_t);
-
-            // set length, width, delta_x
-            // ...
-
-            model.grid.updateInterval = update_interval;
+            int update_interval = model.grid.updateInterval = getIntegerValueFromTextField(updateI_tf);
+            int writer_update = getIntegerValueFromTextField(writerU_tf);
 
 
-            ((LBMUniformGrid)model.grid).updateLBParameters();
+            if (validation) {
+                model.grid.setGravity(gravity_x, gravity_y);
+                model.grid.setViscosity(viscosity);
+                model.grid.setTimeStep(delta_t);
+
+                // set length, width, delta_x
+                // ...
+
+                model.grid.updateInterval = update_interval;
+
+
+                ((LBMUniformGrid) model.grid).updateLBParameters();
+            }
         }
 
-        
         return validation;
     }
 
@@ -342,7 +348,6 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
     private void cancel_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel_buttonActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancel_buttonActionPerformed
@@ -352,10 +357,10 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener{
     }//GEN-LAST:event_apply_buttonActionPerformed
 
     private void ok_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ok_buttonActionPerformed
-        if(applyParameter())
+        if (applyParameter()) {
             this.dispose();
+        }
     }//GEN-LAST:event_ok_buttonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton apply_button;
     private javax.swing.JButton cancel_button;
@@ -394,26 +399,23 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener{
     private javax.swing.JTextField writerU_tf;
     // End of variables declaration//GEN-END:variables
 
-    public void windowOpened(WindowEvent e) {       
+    public void windowOpened(WindowEvent e) {
     }
 
     public void windowClosing(WindowEvent e) {
     }
 
-
     public void windowClosed(WindowEvent e) {
     }
 
-
     public void windowIconified(WindowEvent e) {
     }
-
 
     public void windowDeiconified(WindowEvent e) {
     }
 
     public void windowActivated(WindowEvent e) {
-        if( this.isVisible()){
+        if (this.isVisible()) {
             setParameterFromGrid2UI();
         }
     }

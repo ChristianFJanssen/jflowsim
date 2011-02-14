@@ -244,6 +244,8 @@ public class MainWindow extends javax.swing.JFrame {
                             Solver solver = builder.createSolver(grid);
                             solver.addObserver(viewer);
                             modelManager.startSimulation(solver);
+
+                            configDialog.update();
                         }
                     }
                 }
@@ -321,6 +323,8 @@ public class MainWindow extends javax.swing.JFrame {
                     Solver solver = builder.createSolver(grid);
                     solver.addObserver(viewer);
                     modelManager.startSimulation(solver);
+
+                    configDialog.update();
 
                     repaint();
                 }
