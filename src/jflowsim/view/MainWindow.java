@@ -1,5 +1,6 @@
 package jflowsim.view;
 
+import java.awt.event.WindowEvent;
 import jflowsim.controller.commands.UndoCommand;
 import jflowsim.controller.commands.ZoomAllCommand;
 import jflowsim.controller.commands.ZoomInCommand;
@@ -26,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -40,6 +42,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import jflowsim.view.configdialog.ConfigDialog;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -48,6 +51,7 @@ public class MainWindow extends javax.swing.JFrame {
     private ModelManager modelManager;
     private MainWindow mainWindow;
     private DisplayStyleManager displayStyleManager;
+    private ConfigDialog configDialog;
 
     // Konstruktor
     public MainWindow(GraphicViewer viewer, ModelManager modelManager) {
@@ -58,11 +62,12 @@ public class MainWindow extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-
         this.modelManager = modelManager;
         this.mainWindow = this;
         this.displayStyleManager = new DisplayStyleManager(5);
 
+        this.configDialog = new ConfigDialog(modelManager, this);
+        this.configDialog.setLocation(50, 50);
 
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -80,6 +85,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.setSize(1024, 800);
         this.setMinimumSize(new Dimension(640, 480));
 
+         this.setVisible(true);      
     }
 
     private void createToolBarsAndMenus() {
@@ -323,6 +329,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         simulationMenu.add(action);
         simulationToolBar.add(action);
+
+        action = new AbstractAction("config", ImageUtilities.createImageIcon("config", 22, 22)) {
+
+            public void actionPerformed(ActionEvent e) {
+                if (modelManager.solver != null) {
+                    configDialog.setVisible(true);
+                }
+            }
+        };
+
+        simulationMenu.add(action);
+        simulationToolBar.add(action);
+
 
 
         // preferences-system
