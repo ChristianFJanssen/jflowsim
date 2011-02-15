@@ -31,6 +31,19 @@ public class LBMShallowWaterGrid extends LBMUniformGrid {
         System.out.println("LBMShallowWaterGrid::allocateMemoery() nx:" + nx + " ny:" + ny + " - " + nx * ny);
     }
 
+        public void init(int x, int y, double _h, double _vx, double _vy) {
+
+        double[] feq = new double[9];
+
+        LbEQ.getBGKEquilibriumShallowWater( _h, _vx / dv, _vy / dv, feq, dv, gravity);
+
+        for (int dir = 0; dir < 9; dir++) {
+            f[(x + y * nx) * 9 + dir] = feq[dir];
+            ftemp[(x + y * nx) * 9 + dir] = feq[dir];
+        }
+    }
+
+
     public void refineGrid(double scaleFactor) {
 
         System.out.println("Refinement factor: " + scaleFactor);

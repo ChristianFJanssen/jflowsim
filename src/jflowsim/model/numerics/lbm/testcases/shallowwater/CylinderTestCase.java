@@ -81,21 +81,7 @@ public class CylinderTestCase extends TestCase {
         // Initial conditions
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {
-
-                double[] feq = new double[9];
-
-//                if(i<0.5*grid.nx)
-//                    LbEQ.getBGKEquilibriumShallowWater(h0, initialVelo / grid.v_scale, 0.0, feq, grid.v_scale, grid.gravity);
-//                else
-//                    LbEQ.getBGKEquilibriumShallowWater(h0, initialVelo / grid.v_scale, 0.0, feq, grid.v_scale, grid.gravity);
-
-                //LbEQ.getBGKEquilibriumShallowWater(h0, 0.0, 0.0, feq, grid.v_scale, grid.gravity);
-                LbEQ.getBGKEquilibriumShallowWater(h0, initialVeloLB, 0.0, feq, grid.dv, grid.gravity);
-
-                for (int dir = 0; dir < 9; dir++) {
-                    grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                    grid.ftemp[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                }
+                grid.init(i,j,h0,initialVelo,0.0);
             }
         }
 
