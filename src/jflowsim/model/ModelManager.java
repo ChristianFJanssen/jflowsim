@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
+import jflowsim.view.writer.WriterManager;
 
 public class ModelManager extends Observable implements Serializable, Observer {
 
@@ -18,10 +19,12 @@ public class ModelManager extends Observable implements Serializable, Observer {
     private WorldViewTransformator2D trafo;
     public UniformGrid grid = null;
     public Solver solver;
+    private WriterManager writerManager;
 
     public ModelManager(WorldViewTransformator2D trafo) {
         this.geometryList = new LinkedList<Geometry2D>();
         this.trafo = trafo;
+        this.writerManager = new WriterManager();
     }
 
     public boolean hasGrid() {
@@ -31,6 +34,7 @@ public class ModelManager extends Observable implements Serializable, Observer {
     public void addGrid(UniformGrid grid) {
         if (this.grid == null) {
             this.grid = grid;
+            this.writerManager.setGrid(grid);
             map2Grid();
         }
     }
@@ -55,6 +59,7 @@ public class ModelManager extends Observable implements Serializable, Observer {
     public void removeGrid() {
         if (this.grid != null) {            
             this.grid = null;
+            this.writerManager.setGrid(null);
         }
     }
 
@@ -157,8 +162,13 @@ public class ModelManager extends Observable implements Serializable, Observer {
     }
 
     public void update(Observable o, Object arg) {
+        this.writerManager.write();
         map2Grid();
         super.setChanged();
         super.notifyObservers();
+    }
+
+    public WriterManager getWriterManager() {
+            return this.writerManager;
     }
 }

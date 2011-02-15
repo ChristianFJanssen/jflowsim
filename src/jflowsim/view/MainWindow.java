@@ -1,6 +1,5 @@
 package jflowsim.view;
 
-import java.awt.event.WindowEvent;
 import jflowsim.controller.commands.UndoCommand;
 import jflowsim.controller.commands.ZoomAllCommand;
 import jflowsim.controller.commands.ZoomInCommand;
@@ -27,7 +26,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -43,6 +41,7 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import jflowsim.view.configdialog.ConfigDialog;
+import jflowsim.view.writer.Writer;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -62,9 +61,10 @@ public class MainWindow extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
+
         this.modelManager = modelManager;
         this.mainWindow = this;
-        this.displayStyleManager = new DisplayStyleManager(5);
+        this.displayStyleManager = new DisplayStyleManager();
 
         this.configDialog = new ConfigDialog(modelManager, this);
         this.configDialog.setLocation(50, 50);
@@ -205,13 +205,13 @@ public class MainWindow extends javax.swing.JFrame {
 
 
 
-        JMenu simulationMenu = new JMenu("Simulation");        
+        JMenu simulationMenu = new JMenu("Simulation");
 
         ArrayList<String> solverKeyList = SolverFactory.getInstance().getKeySet();
         for (String solverName : solverKeyList) {
 
             JMenu solverMenuItem = new JMenu(solverName);
-            
+
 
             ArrayList<String> testCases = SolverFactory.getInstance().getBuilder(solverName).getTestCaseKeySet();
 
@@ -242,7 +242,8 @@ public class MainWindow extends javax.swing.JFrame {
                             new ZoomAllCommand(viewer, modelManager).execute();
 
                             Solver solver = builder.createSolver(grid);
-                            solver.addObserver(viewer);
+                            //solver.addObserver(viewer);
+                            solver.addObserver(modelManager);
                             modelManager.startSimulation(solver);
 
                             configDialog.update();
@@ -296,13 +297,13 @@ public class MainWindow extends javax.swing.JFrame {
                     String solverName = modelManager.solver.getClass().getSimpleName();
                     String testCaseName = modelManager.grid.testcase;
 
-                    System.out.println("restart: " +solverName+" "+testCaseName);
+                    System.out.println("restart: " + solverName + " " + testCaseName);
 
                     modelManager.stopSimulation();
 
                     for (GraphicObject graphics : viewer.getGraphicList()) {
                         if (graphics instanceof GraphicGrid) {
-                            
+
                             viewer.remove(graphics);
 
                             break;
@@ -318,7 +319,7 @@ public class MainWindow extends javax.swing.JFrame {
                     GraphicGrid graphic = new GraphicGrid(grid, displayStyleManager);
 
                     modelManager.addGrid(grid);
-                    viewer.addFirst(graphic);                    
+                    viewer.addFirst(graphic);
 
                     Solver solver = builder.createSolver(grid);
                     solver.addObserver(viewer);
@@ -357,7 +358,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 
 
-        JMenu displaystyleMenu = new JMenu("Display Style");        
+        JMenu displaystyleMenu = new JMenu("Display Style");
 
         // ItemListener
         class ScalarDisplayStyleListener implements ItemListener {
@@ -399,9 +400,10 @@ public class MainWindow extends javax.swing.JFrame {
                 bg.add(item);
                 item.addItemListener(new ScalarDisplayStyleListener(i, j));
                 style_menu.add(item);
-                if(i==0 && j==0){
+                if (i == 0 && j == 0) {
                     item.setSelected(true);
                     displayStyleManager.activateScalarStyle(0, 0);
+                } else if (i > 0 && j == scalars.length - 1) {
                 }
                 else if (i>0 && j == scalars.length - 1) {
                     item.setSelected(true);
@@ -446,6 +448,62 @@ public class MainWindow extends javax.swing.JFrame {
 
 
         menuBar.add(displaystyleMenu);
+
+
+
+        // WRITER MENU
+        JMenu writerMenu = new JMenu("Writers");
+
+        // ItemListener
+        class WriterListener implements ItemListener {
+
+            private int index, scalar;
+
+            public WriterListener(int index, int scalar) {
+                this.index = index;
+                this.scalar = scalar;
+            }
+
+            public void itemStateChanged(ItemEvent e) {
+
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    if (scalar == Scalar.OFF) {
+                        modelManager.getWriterManager().deactivateWriter(index);
+                        repaint();
+                    } else {
+                        modelManager.getWriterManager().activateWriter(index, scalar);
+                        repaint();
+                    }
+                }
+            }
+        }
+
+        // ** add scalar display styles ** //
+        ArrayList<Writer> writers = modelManager.getWriterManager().getWriters();
+
+        for (int i = 0; i < writers.size(); i++) {
+
+            JMenu style_menu = new JMenu(writers.get(i).getClass().getSimpleName());
+            writerMenu.add(style_menu);
+
+            ButtonGroup bg = new ButtonGroup();
+            String[] scalars = writers.get(i).getScalars();
+
+            for (int j = 0; j < scalars.length; j++) {
+                JRadioButtonMenuItem item = new JRadioButtonMenuItem(scalars[j]);
+                bg.add(item);
+                item.addItemListener(new WriterListener(i, j));
+                style_menu.add(item);
+//                if (i == 0 && j == 0) {
+//                    item.setSelected(true);
+//                    modelManager.getWriterManager().activateWriter(0, 0);
+//                } else if (i > 0 && j == scalars.length - 1) {
+//                    item.setSelected(true);
+//                }
+            }
+        }
+
+        menuBar.add(writerMenu);
 
         // ------------------------------------------------- //
 

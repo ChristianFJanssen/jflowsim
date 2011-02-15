@@ -11,7 +11,7 @@ public abstract class Solver extends Observable implements Runnable {
     protected CyclicBarrier barrier;
 
     public Solver() {
-        this.num_of_threads = Runtime.getRuntime().availableProcessors();
+        this.num_of_threads = Runtime.getRuntime().availableProcessors()*2;
         
         this.barrier = new CyclicBarrier(num_of_threads);
 

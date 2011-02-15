@@ -3,8 +3,8 @@ package jflowsim.controller.solverbuilder;
 import jflowsim.model.numerics.Solver;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.acm.AcmSolver;
-import jflowsim.model.numerics.lbm.testcases.SonjasTestCase;
-import jflowsim.model.numerics.lbm.testcases.TaylorGreenVortexTestCase;
+import jflowsim.model.numerics.lbm.testcases.acm.SonjasTestCase;
+import jflowsim.model.numerics.lbm.testcases.acm.TaylorGreenVortexTestCase;
 import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class AcmBuilder extends SolverBuilder {

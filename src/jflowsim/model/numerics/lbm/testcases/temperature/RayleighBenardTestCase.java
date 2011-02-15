@@ -1,8 +1,9 @@
-package jflowsim.model.numerics.lbm.testcases;
+package jflowsim.model.numerics.lbm.testcases.temperature;
 
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureGrid;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
 public class RayleighBenardTestCase extends TestCase {

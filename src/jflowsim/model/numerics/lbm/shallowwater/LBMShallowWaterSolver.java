@@ -59,14 +59,15 @@ public class LBMShallowWaterSolver extends LBMSolver {
                     }
 
                     this.collisionShallowWater(s_nu);
-
+                    barrier.await();
                     this.propagate();
+                    barrier.await();
                     this.periodicBCs();
+                    barrier.await();
 
                     if (myrank == 0) {
                         this.applyBCsNEW();
                     }
-
                     barrier.await();
 
                     if (myrank == 0) {
@@ -105,65 +106,82 @@ public class LBMShallowWaterSolver extends LBMSolver {
         }
 
         protected void collisionShallowWater(double s_nu) {
-        double[] feq = new double[9];
-        int nodeIndex = -1;
+            double[] feq = new double[9];
+            int nodeIndex = -1;
 
-        try {
+            try {
 
-            for (int i = startX; i < endX; i++) {
-                for (int j = 0; j < grid.ny; j++) {
+                for (int i = startX; i < endX; i++) {
+                    for (int j = 0; j < grid.ny; j++) {
 
-                    nodeIndex = (i + j * grid.nx) * 9;
+                        nodeIndex = (i + j * grid.nx) * 9;
 
-                    if (grid.getType(i, j) != GridNodeType.SOLID) {
+                        if (grid.getType(i, j) != GridNodeType.SOLID && grid.getType(i, j) != GridNodeType.BOUNDARY) {
 
-                        double h = grid.f[nodeIndex + LbEQ.ZERO]
-                                + grid.f[nodeIndex + LbEQ.E]
-                                + grid.f[nodeIndex + LbEQ.W]
-                                + grid.f[nodeIndex + LbEQ.N]
-                                + grid.f[nodeIndex + LbEQ.S]
-                                + grid.f[nodeIndex + LbEQ.NE]
-                                + grid.f[nodeIndex + LbEQ.SW]
-                                + grid.f[nodeIndex + LbEQ.NW]
-                                + grid.f[nodeIndex + LbEQ.SE];
+                            double h = grid.f[nodeIndex + LbEQ.ZERO]
+                                    + grid.f[nodeIndex + LbEQ.E]
+                                    + grid.f[nodeIndex + LbEQ.W]
+                                    + grid.f[nodeIndex + LbEQ.N]
+                                    + grid.f[nodeIndex + LbEQ.S]
+                                    + grid.f[nodeIndex + LbEQ.NE]
+                                    + grid.f[nodeIndex + LbEQ.SW]
+                                    + grid.f[nodeIndex + LbEQ.NW]
+                                    + grid.f[nodeIndex + LbEQ.SE];
 
-                        double vx = (grid.f[nodeIndex + LbEQ.E]
-                                - grid.f[nodeIndex + LbEQ.W]
-                                + grid.f[nodeIndex + LbEQ.NE]
-                                - grid.f[nodeIndex + LbEQ.SW]
-                                + grid.f[nodeIndex + LbEQ.SE]
-                                - grid.f[nodeIndex + LbEQ.NW]) / h;
+                            double vx = (grid.f[nodeIndex + LbEQ.E]
+                                    - grid.f[nodeIndex + LbEQ.W]
+                                    + grid.f[nodeIndex + LbEQ.NE]
+                                    - grid.f[nodeIndex + LbEQ.SW]
+                                    + grid.f[nodeIndex + LbEQ.SE]
+                                    - grid.f[nodeIndex + LbEQ.NW]) / h;
 
 
-                        double vy = (+grid.f[nodeIndex + LbEQ.N]
-                                - grid.f[nodeIndex + LbEQ.S]
-                                + grid.f[nodeIndex + LbEQ.NE]
-                                + grid.f[nodeIndex + LbEQ.NW]
-                                - grid.f[nodeIndex + LbEQ.SE]
-                                - grid.f[nodeIndex + LbEQ.SW]) / h;
+                            double vy = (+grid.f[nodeIndex + LbEQ.N]
+                                    - grid.f[nodeIndex + LbEQ.S]
+                                    + grid.f[nodeIndex + LbEQ.NE]
+                                    + grid.f[nodeIndex + LbEQ.NW]
+                                    - grid.f[nodeIndex + LbEQ.SE]
+                                    - grid.f[nodeIndex + LbEQ.SW]) / h;
 
-                        LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, grid.v_scale, grid.gravity);
+                            LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, grid.v_scale, grid.gravity);
 
-                        for (int dir = 0; dir < 9; dir++) {
-                            grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + dir] - s_nu * (grid.f[nodeIndex + dir] - feq[dir]);
+                            double s_nu_LES = s_nu;
+//                            //                    // LES part
+                            if (false) {
+                                double impTemp = grid.f[nodeIndex + LbEQ.NE] - feq[LbEQ.NE] + grid.f[nodeIndex + LbEQ.SW] - feq[LbEQ.SW] + grid.f[nodeIndex + LbEQ.NW] - feq[LbEQ.NW] + grid.f[nodeIndex + LbEQ.SE] - feq[LbEQ.SE];
+                                double impXX = grid.f[nodeIndex + LbEQ.E] - feq[LbEQ.E] + grid.f[nodeIndex + LbEQ.W] - feq[LbEQ.W] + impTemp;
+                                double impYY = grid.f[nodeIndex + LbEQ.N] - feq[LbEQ.N] + grid.f[nodeIndex + LbEQ.S] - feq[LbEQ.S] + impTemp;
+                                double impXY = grid.f[nodeIndex + LbEQ.NE] - feq[LbEQ.NE] - (grid.f[nodeIndex + LbEQ.NW] - feq[LbEQ.NW]) + grid.f[nodeIndex + LbEQ.SW] - feq[LbEQ.SW] - (grid.f[nodeIndex + LbEQ.SE] - feq[LbEQ.SE]);
+
+                                double CS2 = 0.18f * 0.18f;
+
+                                double tau0 = 1.0f / s_nu;
+                                double imp = Math.sqrt(impXX * impXX + impYY * impYY + 2.0f * impXY * impXY) * 1.41f;
+                                double temp2 = tau0 * tau0 + 18.0f * CS2 * imp / h /*rho*/;
+                                double tauT = 0.5f * (Math.sqrt(temp2) - tau0);
+                                s_nu_LES = 1.0f / (tau0 + tauT);
+                            }
+
+                            for (int dir = 0; dir < 9; dir++) {
+                                grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + dir] - s_nu_LES * (grid.f[nodeIndex + dir] - feq[dir]);
+                            }
+
+                        } else {
+                            //nodal bounce back
+                            for (int dir = 1; dir < 9; dir++) {
+                                grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + LbEQ.invdir[dir]];
+                            }
+
                         }
-
-                    } else {
-                        //nodal bounce back
-                        for (int dir = 1; dir < 9; dir++) {
-                            grid.ftemp[nodeIndex + dir] = grid.f[nodeIndex + LbEQ.invdir[dir]];
-                        }
-
                     }
                 }
+
+            } catch (Exception ex) {
+                System.out.println("Collision " + ex);
+                return;
+
             }
-
-        } catch (Exception ex) {
-            System.out.println("Collision " + ex);
-            return;
-
         }
-    }
     }//end: solveInrthread
 }//end:solver
 

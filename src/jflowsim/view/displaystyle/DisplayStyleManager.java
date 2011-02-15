@@ -12,7 +12,7 @@ public class DisplayStyleManager{
     private ArrayList<DisplayStyle> vectorStyles = new ArrayList<DisplayStyle>();
     
 
-    public DisplayStyleManager(double sliderscale){
+    public DisplayStyleManager(){
         this.scalarStyles.add(new ColorPlotStyle());
         this.scalarStyles.add(new IntersectionStyle());
         this.scalarStyles.add(new GridStyle());

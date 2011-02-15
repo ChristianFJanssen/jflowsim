@@ -1,11 +1,12 @@
-package jflowsim.model.numerics.lbm.testcases;
+package jflowsim.model.numerics.lbm.testcases.freesurface;
 
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.freesurface.LBMFreeSurfaceGrid;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
-public class BreakingDamTestCase extends TestCase {
+public class FallingDropTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
@@ -19,21 +20,44 @@ public class BreakingDamTestCase extends TestCase {
             grid.type[i] = GridNodeType.GAS;
         }
 
-        int damWidth = (int) (0.5 * grid.nx);
-        int damHeight = (int) (1.0 * grid.ny);
+        int dropCenterX = (int) (0.50 * grid.nx);
+        int dropCenterY = (int) (0.50 * grid.ny);
+        int dropRadius = (int) (0.25 * grid.nx);
 
-        for (int x = 0; x < damWidth; x++) {
-            for (int y = 0; y < damHeight; y++) {
-                grid.setType(x, y, GridNodeType.FLUID);
-                grid.setFill(x, y, 1.0);
+        for (int x = 0; x < grid.nx; x++) {
+            for (int y = 0; y < grid.ny; y++) {
 
-                if (x == damWidth - 1 || y == damHeight - 1) {
-                    grid.setType(x, y, GridNodeType.INTERFACE);
-                    grid.setFill(x, y, 0.5);
+                double distanceSquared = (dropCenterX - x) * (dropCenterX - x) + (dropCenterY - y) * (dropCenterY - y);
+
+                if (distanceSquared < dropRadius * dropRadius) {
+                    grid.setType(x, y, GridNodeType.FLUID);
+                    grid.setFill(x, y, 1.0);
                 }
             }
-
         }
+
+        for (int x = 0; x < grid.nx; x++) {
+            for (int y = 0; y < grid.ny; y++) {
+
+                if (grid.getType(x, y) == GridNodeType.FLUID) {
+
+                    Boolean changeToInterface = false;
+
+                    for (int dir = 0; dir < 9; dir++) {
+                        if (grid.getType(x + LbEQ.ex[dir], y + LbEQ.ey[dir]) == GridNodeType.GAS) {
+                            changeToInterface = true;
+                        }
+                    }
+
+                    if (changeToInterface) {
+                        grid.setType(x, y, GridNodeType.INTERFACE);
+                        grid.setFill(x, y, 0.5);
+                    }
+                }
+            }
+        }
+
+
 
         // Boundary conditions
         for (int x = 0; x < grid.nx; x++) {
@@ -64,7 +88,7 @@ public class BreakingDamTestCase extends TestCase {
             }
         }
 
-        return grid;
 
+        return grid;
     }
 }

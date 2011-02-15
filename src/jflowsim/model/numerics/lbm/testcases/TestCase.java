@@ -13,6 +13,26 @@ public abstract class TestCase {
         }
     }
 
+    protected void initCircle(UniformGrid grid, double centerX, double centerY, double radius) {
+        for (int i = 0; i < grid.nx; i++) {
+            for (int j = 0; j < grid.ny; j++) {
+                
+                double x = i*grid.dx;
+                double y = j*grid.dx;
+
+                double dx = x-centerX;
+                double dy = y-centerY;
+
+                double dist = Math.sqrt(dx*dx+dy*dy);
+
+                if( dist < radius )
+                {
+                    grid.setType(i,j,GridNodeType.BOUNDARY);
+                }
+            }
+        }
+    }
+
     public void initWallEast(UniformGrid grid) {
         for (int y = 0; y < grid.ny; y++) {
             grid.type[grid.nx - 1 + y * grid.nx] = GridNodeType.BOUNDARY;

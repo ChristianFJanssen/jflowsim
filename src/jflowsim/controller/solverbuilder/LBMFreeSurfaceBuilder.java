@@ -3,8 +3,8 @@ package jflowsim.controller.solverbuilder;
 import jflowsim.model.numerics.Solver;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.freesurface.LBMFreeSurfaceSolver;
-import jflowsim.model.numerics.lbm.testcases.BreakingDamTestCase;
-import jflowsim.model.numerics.lbm.testcases.FallingDropTestCase;
+import jflowsim.model.numerics.lbm.testcases.freesurface.BreakingDamTestCase;
+import jflowsim.model.numerics.lbm.testcases.freesurface.FallingDropTestCase;
 import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class LBMFreeSurfaceBuilder extends SolverBuilder {

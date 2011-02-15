@@ -26,7 +26,25 @@ public class LBMGeneralSWBC extends BoundaryCondition {
         if (type == EAST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                double ux = myGrid.getVeloX(myGrid.nx - 2, j);
+                nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
+
+                double h = myGrid.ftemp[nodeIndex + LbEQ.ZERO]
+                        + myGrid.ftemp[nodeIndex + LbEQ.E]
+                        + myGrid.ftemp[nodeIndex + LbEQ.W]
+                        + myGrid.ftemp[nodeIndex + LbEQ.N]
+                        + myGrid.ftemp[nodeIndex + LbEQ.S]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NE]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SE];
+
+                double ux = (myGrid.ftemp[nodeIndex + LbEQ.E]
+                        - myGrid.ftemp[nodeIndex + LbEQ.W]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NE]
+                        - myGrid.ftemp[nodeIndex + LbEQ.SW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SE]
+                        - myGrid.ftemp[nodeIndex + LbEQ.NW]) / h;
+
                 double e = myGrid.v_scale;
                 ux = ux * myGrid.v_scale;
                 double fluxX;
@@ -37,7 +55,7 @@ public class LBMGeneralSWBC extends BoundaryCondition {
                     fluxX = this.bcValue;
                 }
 
-                nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
+
 
                 myGrid.f[nodeIndex + LbEQ.W] = myGrid.f[nodeIndex + LbEQ.E] - 2.0f * fluxX / 3.0f / e;
                 myGrid.f[nodeIndex + LbEQ.NW] = myGrid.f[nodeIndex + LbEQ.SE] - fluxX / 6.0f / e + 0.5f * (myGrid.f[nodeIndex + LbEQ.S] - myGrid.f[nodeIndex + LbEQ.N]);
@@ -46,7 +64,25 @@ public class LBMGeneralSWBC extends BoundaryCondition {
         } else if (type == WEST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                double ux = myGrid.getVeloX(1, j);
+                nodeIndex = (0 + j * myGrid.nx) * 9;
+
+                double h = myGrid.ftemp[nodeIndex + LbEQ.ZERO]
+                        + myGrid.ftemp[nodeIndex + LbEQ.E]
+                        + myGrid.ftemp[nodeIndex + LbEQ.W]
+                        + myGrid.ftemp[nodeIndex + LbEQ.N]
+                        + myGrid.ftemp[nodeIndex + LbEQ.S]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NE]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SE];
+
+                double ux = (myGrid.ftemp[nodeIndex + LbEQ.E]
+                        - myGrid.ftemp[nodeIndex + LbEQ.W]
+                        + myGrid.ftemp[nodeIndex + LbEQ.NE]
+                        - myGrid.ftemp[nodeIndex + LbEQ.SW]
+                        + myGrid.ftemp[nodeIndex + LbEQ.SE]
+                        - myGrid.ftemp[nodeIndex + LbEQ.NW]) / h;
+
                 double e = myGrid.v_scale;
                 ux = ux * myGrid.v_scale;
                 double fluxX;
@@ -57,7 +93,7 @@ public class LBMGeneralSWBC extends BoundaryCondition {
                     fluxX = this.bcValue;
                 }
 
-                nodeIndex = (0 + j * myGrid.nx) * 9;
+
 
                 myGrid.f[nodeIndex + LbEQ.E] = myGrid.f[nodeIndex + LbEQ.W] + 2.0f * fluxX / 3.0f / e;
                 myGrid.f[nodeIndex + LbEQ.NE] = myGrid.f[nodeIndex + LbEQ.SW] + fluxX / 6.0f / e + 0.5f * (myGrid.f[nodeIndex + LbEQ.S] - myGrid.f[nodeIndex + LbEQ.N]);

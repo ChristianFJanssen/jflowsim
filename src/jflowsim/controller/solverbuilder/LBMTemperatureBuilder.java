@@ -4,7 +4,7 @@ import jflowsim.model.numerics.Solver;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureGrid;
 import jflowsim.model.numerics.lbm.temperature.LBMTemperatureSolver;
-import jflowsim.model.numerics.lbm.testcases.RayleighBenardTestCase;
+import jflowsim.model.numerics.lbm.testcases.temperature.RayleighBenardTestCase;
 import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 

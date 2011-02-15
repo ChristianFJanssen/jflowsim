@@ -50,5 +50,6 @@ public class LBMShallowWaterGrid extends LBMUniformGrid {
         hud.drawText("LBM viscosity: " + this.nue_lbm);
         hud.drawText("LBM forcing: " + this.forcingX1 + "," + this.forcingX2);
         hud.drawText("V scale: " + this.v_scale);
+        hud.drawText("Time step: " + this.timestep);
     }
 }

@@ -1,7 +1,8 @@
-package jflowsim.model.numerics.lbm.testcases;
+package jflowsim.model.numerics.lbm.testcases.acm;
 
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.acm.AcmGrid;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 import jflowsim.model.numerics.utilities.GridNodeType;
 
 public class SonjasTestCase extends TestCase {

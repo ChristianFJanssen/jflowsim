@@ -39,9 +39,7 @@ public class LBMNavierStokesSolver extends LBMSolver {
         /* ======================================================================================= */
         public void run() {
 
-            try {
-
-                double s_nu = 2. / (6. * grid.nue_lbm + 1.);
+            try {               
 
                 long timer = 0;
                 long counter = 0;
@@ -57,6 +55,7 @@ public class LBMNavierStokesSolver extends LBMSolver {
                         counter++;
                     }
 
+                    double s_nu = 2. / (6. * grid.nue_lbm + 1.);
 
                     this.collisionFCM(s_nu);
                     //this.collisionMRT(s_nu);

@@ -1,0 +1,113 @@
+package jflowsim.model.numerics.lbm.testcases.shallowwater;
+
+import jflowsim.model.numerics.BoundaryCondition;
+import jflowsim.model.numerics.UniformGrid;
+import jflowsim.model.numerics.lbm.LbEQ;
+import jflowsim.model.numerics.lbm.LBMBounceForwardBC;
+import jflowsim.model.numerics.lbm.shallowwater.LBMGeneralSWBC;
+import jflowsim.model.numerics.lbm.shallowwater.LBMHeightSWBC;
+import jflowsim.model.numerics.lbm.shallowwater.LBMShallowWaterGrid;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
+
+public class CylinderTestCase extends TestCase {
+
+    public UniformGrid getGrid() {
+
+        LBMShallowWaterGrid grid = new LBMShallowWaterGrid(4.0 /* length */, 4.0 /* width */, 0.02 /* dx */);
+
+        grid.testcase = this.getClass().getSimpleName();
+
+        double h0 = 0.185;
+        double Q = 0.248; //m^3 /s
+        double flux = 0.248 / 2.0;
+        double initialVelo = flux / h0;
+
+        double targetMacVelo = 10*initialVelo;
+
+        double targetTimeStep = grid.dx / targetMacVelo;
+
+        double radius = 0.11;
+
+        // use Reynolds number to determine flow viscosity
+        double Re = 10;
+
+        double nue = initialVelo*2*radius / Re;
+
+        grid.setGravity(0.0, 0.0 /* m/s^2 */);
+        grid.setViscosity(nue /* m^2/s */);
+        //grid.setTimeStep(0.0001 /* s */);
+        grid.setTimeStep(targetTimeStep);
+
+        grid.updateLBParameters();
+
+        double initialVeloLB = initialVelo / grid.v_scale;
+
+        // Output the parameters and check the stability range
+        System.out.println("V_scale = " + grid.v_scale);
+
+        System.out.println("Re (real) = " + initialVelo*2*radius/nue);
+        System.out.println("Re (LBM)  = " + initialVeloLB*(2*radius/grid.dx)/grid.nue_lbm);
+
+        this.initFluid(grid);
+
+        this.initCircle(grid, 2.0, 2.0, radius);
+
+        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.EAST));
+        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.WEST));
+
+        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.NORTH));
+        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
+
+
+        
+
+        System.out.println("v / sqrt(g*h) = " + initialVeloLB / Math.sqrt(grid.gravity * h0));
+        System.out.println("Celerity = " + grid.gravity * h0 / (grid.v_scale * grid.v_scale));
+        System.out.println("Nue real = " + grid.v_scale * grid.v_scale * grid.dt * grid.nue_lbm);
+        System.out.println("initialVelo = " + initialVeloLB);
+
+
+        
+        // INFLOW BOUNDARY
+        //grid.addBC(new LBMHeightSWBC(grid, BoundaryCondition.WEST, h0));
+        grid.addBC(new LBMGeneralSWBC(grid, BoundaryCondition.WEST, h0 * initialVeloLB * grid.v_scale, false));
+        //grid.addBC(new LBMEquilibriumBC(grid, BoundaryCondition.WEST, h0, initialVeloLB, 0.0));
+        //grid.addBC(new LBMEquilibriumExtrapolBC(grid, BoundaryCondition.WEST, h0*initialVeloLB));
+
+        // OUTFLOW BOUNDARY
+        //grid.addBC(new LBMGeneralSWBC(grid, BoundaryCondition.EAST, 1.1*h0, true));
+        grid.addBC(new LBMHeightSWBC(grid, BoundaryCondition.EAST, h0));
+
+        //NORTH and SOUTH
+        grid.addBC(new LBMBounceForwardBC(grid, BoundaryCondition.NORTH));
+        grid.addBC(new LBMBounceForwardBC(grid, BoundaryCondition.SOUTH));
+        
+
+        //grid.periodicX = true;
+        //grid.periodicY = true;
+
+        // Initial conditions
+        for (int i = 0; i < grid.nx; i++) {
+            for (int j = 0; j < grid.ny; j++) {
+
+                double[] feq = new double[9];
+
+//                if(i<0.5*grid.nx)
+//                    LbEQ.getBGKEquilibriumShallowWater(h0, initialVelo / grid.v_scale, 0.0, feq, grid.v_scale, grid.gravity);
+//                else
+//                    LbEQ.getBGKEquilibriumShallowWater(h0, initialVelo / grid.v_scale, 0.0, feq, grid.v_scale, grid.gravity);
+
+                //LbEQ.getBGKEquilibriumShallowWater(h0, 0.0, 0.0, feq, grid.v_scale, grid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h0, initialVeloLB, 0.0, feq, grid.v_scale, grid.gravity);
+
+                for (int dir = 0; dir < 9; dir++) {
+                    grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];
+                    grid.ftemp[(i + j * grid.nx) * 9 + dir] = feq[dir];
+                }
+            }
+        }
+
+        return grid;
+
+    }
+}

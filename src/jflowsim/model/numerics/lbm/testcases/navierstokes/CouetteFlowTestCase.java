@@ -1,4 +1,4 @@
-package jflowsim.model.numerics.lbm.testcases;
+package jflowsim.model.numerics.lbm.testcases.navierstokes;
 
 import jflowsim.model.numerics.BoundaryCondition;
 import jflowsim.model.numerics.UniformGrid;
@@ -6,6 +6,7 @@ import jflowsim.model.numerics.lbm.LBMMovingWallBC;
 import jflowsim.model.numerics.lbm.LBMNoSlipBC;
 import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.lbm.navierstokes.LBMNavierStokesGrid;
+import jflowsim.model.numerics.lbm.testcases.TestCase;
 
 public class CouetteFlowTestCase extends TestCase {
 
