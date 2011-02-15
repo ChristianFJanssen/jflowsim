@@ -53,7 +53,7 @@ public class ArrowColorPlotStyle extends DisplayStyle {
                     double view_cx = trafo.transformWorldToViewXCoord(cx, cy, false);
                     double view_cy = trafo.transformWorldToViewYCoord(cx, cy, false);
 
-                    if (grid.getType(x, y) != GridNodeType.SOLID) {
+                    if (grid.getType(x, y) <= GridNodeType.SOLID) {
 
                         double v = grid.getScalar(x, y, Scalar.V);
                         if (v < min) {

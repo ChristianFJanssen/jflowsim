@@ -58,7 +58,7 @@ public class RayleighBenardTestCase extends TestCase {
 //        }
 
 
-        grid.v_scale = grid.viscosity / grid.nue_lbm * grid.nx / grid.getLength();
+        grid.dv = grid.viscosity / grid.nue_lbm * grid.nx / grid.getLength();
 
         double[] feq = new double[9];
         double[] geq = new double[5];

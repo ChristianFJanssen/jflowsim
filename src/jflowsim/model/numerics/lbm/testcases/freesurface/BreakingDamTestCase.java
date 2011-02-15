@@ -47,7 +47,7 @@ public class BreakingDamTestCase extends TestCase {
             grid.type[grid.nx - 1 + y * grid.nx] = GridNodeType.BOUNDARY;
         }
 
-        grid.v_scale = grid.viscosity / grid.nue_lbm * grid.nx / grid.getLength();
+        grid.dv = grid.viscosity / grid.nue_lbm * grid.nx / grid.getLength();
 
 
         for (int i = 0; i < grid.nx; i++) {

@@ -45,7 +45,7 @@ import jflowsim.view.writer.Writer;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private GraphicViewer viewer;
+    public GraphicViewer viewer;
     private JLabel statusField;
     private ModelManager modelManager;
     private MainWindow mainWindow;

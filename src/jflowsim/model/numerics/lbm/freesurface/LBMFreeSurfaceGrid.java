@@ -3,6 +3,7 @@ package jflowsim.model.numerics.lbm.freesurface;
 import jflowsim.model.ModelManager;
 import jflowsim.model.geometry2d.Geometry2D;
 import jflowsim.model.numerics.lbm.LBMUniformGrid;
+import jflowsim.model.numerics.lbm.LbEQ;
 import jflowsim.model.numerics.utilities.GridNodeType;
 import jflowsim.model.numerics.utilities.Scalar;
 import jflowsim.view.headupdisplay.HeadUpDisplay;
@@ -28,7 +29,65 @@ public class LBMFreeSurfaceGrid extends LBMUniformGrid {
         fill = new double[nx * ny];
         tempfill = new double[nx * ny];
 
+        for (int i = 0; i < nx * ny; i++) {
+            f[i] = 0.0;
+            ftemp[i] = 0.0;
+            fill[i] = 0.0;
+            tempfill[i] = 0.0;
+            type[i] = GridNodeType.GAS;
+        }
+
         System.out.println("LBMNodefreeGrid::allocateMemoery() nx:" + nx + " ny:" + ny + " - " + nx * ny);
+    }
+
+    public void refineGrid(double scaleFactor) {
+
+        System.out.println("Refinement factor: " + scaleFactor);
+
+        int nxOld = this.nx;
+        int nyOld = this.ny;
+
+        // update information on the domain size
+        this.nx = (int) ((this.nx - 1) * scaleFactor) + 1;
+        this.ny = (int) ((this.ny - 1) * scaleFactor) + 1;
+        this.dx = this.getLength() / (this.nx - 1);
+        this.updateParameters();
+
+        // allocate memory for distribution functions and geo matrix
+        double fNew[] = new double[nx * ny * 9];
+        double ftempNew[] = new double[nx * ny * 9];
+        int typeNew[] = new int[nx * ny];
+        double fillNew[] = new double[nx * ny];
+        double tempfillNew[] = new double[nx * ny];
+
+
+        System.out.println("LBMFreeSurfaceGrid::allocateMemory() nx:" + nx + " ny:" + ny + " - " + nx * ny);
+
+        // constant interpolation of the PDFs and the geo matrix
+        for (int x = 0; x < this.nx; x++) {
+            for (int y = 0; y < this.ny; y++) {
+                // index of source node in old data array
+                int xOld = (int) Math.floor(x / scaleFactor);
+                int yOld = (int) Math.floor(y / scaleFactor);
+
+                int nodeIndexOld = (yOld * nxOld + xOld) * 9;
+                int nodeIndexNew = (y * this.nx + x) * 9;
+
+                for (int dir = 0; dir <= LbEQ.ENDDIR; dir++) {
+                    fNew[nodeIndexNew + dir] = f[nodeIndexOld + dir];
+                    ftempNew[nodeIndexNew + dir] = ftemp[nodeIndexOld + dir];
+                }
+                typeNew[nodeIndexNew / 9] = type[nodeIndexOld / 9];
+                fillNew[nodeIndexNew / 9] = fill[nodeIndexOld / 9];
+                tempfillNew[nodeIndexNew / 9] = tempfill[nodeIndexOld / 9];
+            }
+        }
+
+        f = fNew;
+        ftemp = ftempNew;
+        type = typeNew;
+        fill = fillNew;
+        tempfill = tempfillNew;
     }
 
     public double getScalar(int x, int y, int type) {
@@ -58,7 +117,7 @@ public class LBMFreeSurfaceGrid extends LBMUniformGrid {
     }
 
     public void map2Grid(ModelManager modMan) {
-        
+
         for (int x = 0; x < nx; x++) {
             for (int y = 0; y < ny; y++) {
 

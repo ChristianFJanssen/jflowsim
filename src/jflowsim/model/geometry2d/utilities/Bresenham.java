@@ -27,8 +27,8 @@ public class Bresenham {
         int dy = yend - ystart;
 
         /* Vorzeichen des Inkrements bestimmen */
-        int incx = (int)Math.signum((double)dx);
-        int incy = (int)Math.signum((double)dy);
+        int incx = (int) Math.signum((double) dx);
+        int incy = (int) Math.signum((double) dy);
         if (dx < 0) {
             dx = -dx;
         }
@@ -60,7 +60,9 @@ public class Bresenham {
         int y = ystart;
         err = el / 2;
         //SetPixel(x,y);
-        grid.setType(x,y,GridNodeType.SOLID);
+        if (grid.getType(x, y) == GridNodeType.FLUID) {
+            grid.setType(x, y, GridNodeType.SOLID);
+        }
 
         /* Pixel berechnen */
         for (int t = 0; t < el; ++t) /* t zaehlt die Pixel, el ist auch Anzahl */ {
@@ -77,7 +79,9 @@ public class Bresenham {
                 x += pdx;
                 y += pdy;
             }
-            grid.setType(x,y,GridNodeType.SOLID);
+            if (grid.getType(x, y) == GridNodeType.FLUID) {
+                grid.setType(x, y, GridNodeType.SOLID);
+            }
         }
     }
 }

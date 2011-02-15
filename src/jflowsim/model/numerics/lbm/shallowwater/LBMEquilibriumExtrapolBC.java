@@ -32,7 +32,7 @@ public class LBMEquilibriumExtrapolBC extends BoundaryCondition {
                 double vy = 0.0;
 
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
 
@@ -48,7 +48,7 @@ public class LBMEquilibriumExtrapolBC extends BoundaryCondition {
                 double vx = flux / h;
                 double vy = 0.0;
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = (0 + j * myGrid.nx) * 9;
 
@@ -64,7 +64,7 @@ public class LBMEquilibriumExtrapolBC extends BoundaryCondition {
                 double vx = flux / h;
                 double vy = 0.0;
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = (i + (myGrid.ny - 1) * myGrid.nx) * 9;
 
@@ -80,7 +80,7 @@ public class LBMEquilibriumExtrapolBC extends BoundaryCondition {
                 double vx = flux / h;
                 double vy = 0.0;
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = (i) * 9;
 

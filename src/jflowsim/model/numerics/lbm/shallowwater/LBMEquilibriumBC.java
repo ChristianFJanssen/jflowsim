@@ -28,7 +28,7 @@ public class LBMEquilibriumBC extends BoundaryCondition {
         if (type == EAST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
 
@@ -39,7 +39,7 @@ public class LBMEquilibriumBC extends BoundaryCondition {
         } else if (type == WEST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = (0 + j * myGrid.nx) * 9;
 
@@ -50,7 +50,7 @@ public class LBMEquilibriumBC extends BoundaryCondition {
         } else if (type == NORTH) {
             for (int i = 0; i < myGrid.nx; i++) {
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 nodeIndex = (i + (myGrid.ny - 1) * myGrid.nx) * 9;
 
@@ -61,7 +61,7 @@ public class LBMEquilibriumBC extends BoundaryCondition {
         } else if (type == SOUTH) {
             for (int i = 0; i < myGrid.nx; i++) {
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
                 
                 nodeIndex = (i) * 9;
 

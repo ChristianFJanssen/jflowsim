@@ -100,7 +100,8 @@ public class Circle2D extends Geometry2D {
             for (int y = y1; y <= y2; y++) {
 
                 if(isPointInside(grid.transXIndex2Coord(x), grid.transYIndex2Coord(y))){
-                    grid.setType(x,y,GridNodeType.SOLID);
+                    if(grid.getType(x,y) == GridNodeType.FLUID)
+                        grid.setType(x,y,GridNodeType.SOLID);
                 }
             }
         }

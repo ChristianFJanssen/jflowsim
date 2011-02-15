@@ -13,8 +13,7 @@ public abstract class UniformGrid {
     private double minX, minY, maxX, maxY;
     public boolean periodicX=false, periodicY=false;
     private double length, width; // PRIVATE, damit Zugriff nur ueber getter/setter zwecks min/max-update
-    public double dx, dt;
-    public double v_scale;
+    public double dx, dt,dv;
     public double viscosity;
     public double gravityX, gravityY;
     public double gravity = 9.81;
@@ -52,6 +51,10 @@ public abstract class UniformGrid {
     }
 
     protected abstract void allocateMemory();
+
+    public abstract void updateParameters();
+
+    public abstract void refineGrid(double scaleFactor);
 
     public void map2Grid(ModelManager model) {
 

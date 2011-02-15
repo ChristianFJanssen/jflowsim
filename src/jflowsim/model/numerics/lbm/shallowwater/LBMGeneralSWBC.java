@@ -45,8 +45,8 @@ public class LBMGeneralSWBC extends BoundaryCondition {
                         + myGrid.ftemp[nodeIndex + LbEQ.SE]
                         - myGrid.ftemp[nodeIndex + LbEQ.NW]) / h;
 
-                double e = myGrid.v_scale;
-                ux = ux * myGrid.v_scale;
+                double e = myGrid.dv;
+                ux = ux * myGrid.dv;
                 double fluxX;
 
                 if (isHeightBC) {
@@ -83,8 +83,8 @@ public class LBMGeneralSWBC extends BoundaryCondition {
                         + myGrid.ftemp[nodeIndex + LbEQ.SE]
                         - myGrid.ftemp[nodeIndex + LbEQ.NW]) / h;
 
-                double e = myGrid.v_scale;
-                ux = ux * myGrid.v_scale;
+                double e = myGrid.dv;
+                ux = ux * myGrid.dv;
                 double fluxX;
 
                 if (isHeightBC) {

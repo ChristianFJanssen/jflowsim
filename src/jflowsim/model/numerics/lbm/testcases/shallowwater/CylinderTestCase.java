@@ -13,7 +13,7 @@ public class CylinderTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
-        LBMShallowWaterGrid grid = new LBMShallowWaterGrid(4.0 /* length */, 4.0 /* width */, 0.02 /* dx */);
+        LBMShallowWaterGrid grid = new LBMShallowWaterGrid(4.0 /* length */, 4.0 /* width */, 0.04 /* dx */);
 
         grid.testcase = this.getClass().getSimpleName();
 
@@ -38,17 +38,14 @@ public class CylinderTestCase extends TestCase {
         //grid.setTimeStep(0.0001 /* s */);
         grid.setTimeStep(targetTimeStep);
 
-        grid.updateLBParameters();
+        grid.updateParameters();
 
-        double initialVeloLB = initialVelo / grid.v_scale;
+        double initialVeloLB = initialVelo / grid.dv;
 
         // Output the parameters and check the stability range
-        System.out.println("V_scale = " + grid.v_scale);
-
+        System.out.println("V_scale = " + grid.dv);
         System.out.println("Re (real) = " + initialVelo*2*radius/nue);
         System.out.println("Re (LBM)  = " + initialVeloLB*(2*radius/grid.dx)/grid.nue_lbm);
-
-        this.initFluid(grid);
 
         this.initCircle(grid, 2.0, 2.0, radius);
 
@@ -56,21 +53,16 @@ public class CylinderTestCase extends TestCase {
         //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.WEST));
 
         //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.NORTH));
-        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
-
-
-        
+        //grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));   
 
         System.out.println("v / sqrt(g*h) = " + initialVeloLB / Math.sqrt(grid.gravity * h0));
-        System.out.println("Celerity = " + grid.gravity * h0 / (grid.v_scale * grid.v_scale));
-        System.out.println("Nue real = " + grid.v_scale * grid.v_scale * grid.dt * grid.nue_lbm);
+        System.out.println("Celerity = " + grid.gravity * h0 / (grid.dv * grid.dv));
+        System.out.println("Nue real = " + grid.dv * grid.dv * grid.dt * grid.nue_lbm);
         System.out.println("initialVelo = " + initialVeloLB);
-
-
         
         // INFLOW BOUNDARY
         //grid.addBC(new LBMHeightSWBC(grid, BoundaryCondition.WEST, h0));
-        grid.addBC(new LBMGeneralSWBC(grid, BoundaryCondition.WEST, h0 * initialVeloLB * grid.v_scale, false));
+        grid.addBC(new LBMGeneralSWBC(grid, BoundaryCondition.WEST, h0 * initialVeloLB * grid.dv, false));
         //grid.addBC(new LBMEquilibriumBC(grid, BoundaryCondition.WEST, h0, initialVeloLB, 0.0));
         //grid.addBC(new LBMEquilibriumExtrapolBC(grid, BoundaryCondition.WEST, h0*initialVeloLB));
 
@@ -98,7 +90,7 @@ public class CylinderTestCase extends TestCase {
 //                    LbEQ.getBGKEquilibriumShallowWater(h0, initialVelo / grid.v_scale, 0.0, feq, grid.v_scale, grid.gravity);
 
                 //LbEQ.getBGKEquilibriumShallowWater(h0, 0.0, 0.0, feq, grid.v_scale, grid.gravity);
-                LbEQ.getBGKEquilibriumShallowWater(h0, initialVeloLB, 0.0, feq, grid.v_scale, grid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h0, initialVeloLB, 0.0, feq, grid.dv, grid.gravity);
 
                 for (int dir = 0; dir < 9; dir++) {
                     grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];

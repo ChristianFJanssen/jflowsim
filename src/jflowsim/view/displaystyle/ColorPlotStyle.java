@@ -52,11 +52,6 @@ public class ColorPlotStyle extends DisplayStyle {
                 }
             }
 
-            hud.drawText("Min = " + df.format(this.tmp_min));
-            hud.drawText("Max = " + df.format(this.tmp_min));
-
-
-
             double x1_view = trafo.transformWorldToViewXCoord(grid.getMinX(), grid.getMinY(), false);
             double y1_view = trafo.transformWorldToViewYCoord(grid.getMinX(), grid.getMinY(), false);
             double x2_view = trafo.transformWorldToViewXCoord(grid.getMaxX(), grid.getMaxY(), false);
@@ -74,8 +69,8 @@ public class ColorPlotStyle extends DisplayStyle {
 
                     double scalar = grid.getScalar(x, y, scalar_type);
 
-                    if (grid.getType(x, y) == GridNodeType.SOLID) {
-                        c = Color.BLUE;
+                    if (grid.getType(x, y) <= GridNodeType.SOLID) {
+                        c = Color.BLACK;
                     } else {
                         if (scalar < min) {
                             min = scalar;

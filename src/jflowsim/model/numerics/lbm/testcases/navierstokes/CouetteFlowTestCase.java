@@ -19,28 +19,19 @@ public class CouetteFlowTestCase extends TestCase {
         grid.setGravity(0.0, 0.0 /* m/s^2 */);
         grid.setViscosity(0.005 /* m^2/s */);
         grid.setTimeStep(0.0001 /* s */);
-
-        grid.updateLBParameters();
-
-        this.initFluid(grid);
+        grid.updateParameters();
 
         grid.periodicX = true;
 
-        grid.addBC(new LBMMovingWallBC(grid, BoundaryCondition.NORTH, 0.1, 0.0));
+        double inflowVelo = 5.;
+
+        grid.addBC(new LBMMovingWallBC(grid, BoundaryCondition.NORTH, inflowVelo, 0.0));
         grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
 
         // Initial conditions
-        double[] feq = new double[9];
-
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {
-
-                LbEQ.getBGKEquilibrium(1., 0., 0., feq);
-
-                for (int dir = 0; dir < 9; dir++) {
-                    grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                    grid.ftemp[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                }
+                grid.init(i,j,1./3.,0.0,0.0);
             }
         }
 

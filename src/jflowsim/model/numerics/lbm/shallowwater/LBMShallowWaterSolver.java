@@ -143,7 +143,7 @@ public class LBMShallowWaterSolver extends LBMSolver {
                                     - grid.f[nodeIndex + LbEQ.SE]
                                     - grid.f[nodeIndex + LbEQ.SW]) / h;
 
-                            LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, grid.v_scale, grid.gravity);
+                            LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, grid.dv, grid.gravity);
 
                             double s_nu_LES = s_nu;
 //                            //                    // LES part

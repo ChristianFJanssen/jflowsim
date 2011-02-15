@@ -7,12 +7,6 @@ public abstract class TestCase {
 
     public abstract UniformGrid getGrid();
 
-    public void initFluid(UniformGrid grid) {
-        for (int y = 0; y < grid.ny; y++) {
-            grid.type[grid.nx - 1 + y * grid.nx] = GridNodeType.FLUID;
-        }
-    }
-
     protected void initCircle(UniformGrid grid, double centerX, double centerY, double radius) {
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {

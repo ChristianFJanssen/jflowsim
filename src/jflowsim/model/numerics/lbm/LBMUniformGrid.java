@@ -24,13 +24,13 @@ public abstract class LBMUniformGrid extends UniformGrid {
         this.forcingX2 = _forcingX2;
     }
 
-    public void updateLBParameters() {
+    public void updateParameters() {
         //calculate the lattice vlaues for forcing and viscosity
         this.nue_lbm = this.viscosity * this.dt / this.dx / this.dx;
         this.forcingX1 = this.gravityX * this.dt * this.dt / this.dx;
         this.forcingX2 = this.gravityY * this.dt * this.dt / this.dx;
 
-        this.v_scale = this.dx / this.dt;
+        this.dv = this.dx / this.dt;
     }
 
 //    public void adjustMachNumber(double _targetValue) {

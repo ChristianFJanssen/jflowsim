@@ -249,7 +249,9 @@ public class Polygon2D extends Geometry2D {
                     double xx1 = grid.transXIndex2Coord(x);
                     double yy1 = grid.transYIndex2Coord(y);
                     if (isPointInside(xx1, yy1)) {
-                        grid.setType(x,y,GridNodeType.SOLID);
+                        if (grid.getType(x, y) == GridNodeType.FLUID) {
+                            grid.setType(x, y, GridNodeType.SOLID);
+                        }
                     }
                 }
             }

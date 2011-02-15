@@ -3,20 +3,27 @@ package jflowsim.view.configdialog;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 import javax.swing.JTextField;
+import jflowsim.controller.solverbuilder.SolverBuilder;
+import jflowsim.controller.solverbuilder.SolverFactory;
 import jflowsim.model.ModelManager;
-import jflowsim.model.numerics.lbm.LBMUniformGrid;
+import jflowsim.model.numerics.Solver;
+import jflowsim.view.MainWindow;
 import jflowsim.view.img.ImageUtilities;
 
 public class ConfigDialog extends javax.swing.JDialog implements WindowListener {
 
     private boolean validation = true;
     private ModelManager model;
+    java.awt.Frame parent;
 
     /** Creates new form ConfigDialog */
-    public ConfigDialog(ModelManager model, java.awt.Frame parent) {
-        super(parent, false);
+    public ConfigDialog(ModelManager model, java.awt.Frame _parent) {
+        super(_parent, false);
+
         this.model = model;
+        this.parent = _parent;
 
         initComponents();
 
@@ -51,20 +58,24 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         return value;
     }
 
-    public void update(){
+    public void update() {
         this.setParameterFromGrid2UI();
     }
 
     private void setParameterFromGrid2UI() {
         if (model.hasGrid()) {
+
+            DecimalFormat dfExpo = new DecimalFormat("0.00E0");
+            DecimalFormat df = new DecimalFormat("0.####");
+
             gravity_x_tf.setText(String.valueOf(model.grid.gravityX));
             gravity_y_tf.setText(String.valueOf(model.grid.gravityY));
-            viscosity_tf.setText(String.valueOf(model.grid.viscosity));
-            delta_t_tf.setText(String.valueOf(model.grid.dt));
+            viscosity_tf.setText(dfExpo.format(model.grid.viscosity));
+            delta_t_tf.setText(dfExpo.format(model.grid.dt));
 
             length_tf.setText(String.valueOf(model.grid.getLength()));
             width_tf.setText(String.valueOf(model.grid.getWidth()));
-            delta_x_tf.setText(String.valueOf(model.grid.dx));
+            delta_x_tf.setText(df.format(model.grid.dx));
 
 
             updateI_tf.setText(String.valueOf(model.grid.updateInterval));
@@ -99,13 +110,31 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
                 model.grid.setTimeStep(delta_t);
 
                 // set length, width, delta_x
-                // ...
+                double scaleFactor = model.grid.dx / delta_x;
+                if (scaleFactor != 1.0) {
+
+                    String _solverName = model.solver.getClass().getSimpleName();
+                    model.stopSimulation();
+
+                    model.grid.refineGrid(scaleFactor);
+
+                    if (this.fixedMachNumber_cb.isSelected()) {
+                        model.grid.setTimeStep(delta_t / scaleFactor);
+                        this.setParameterFromGrid2UI();
+                    }
+
+                    SolverBuilder builder = SolverFactory.getInstance().getBuilder(_solverName);
+                    Solver solver = builder.createSolver(model.grid);
+                    solver.addObserver(((MainWindow) this.parent).viewer);
+                    model.grid.map2Grid(model);
+                    model.startSimulation(solver);
+                }
 
 
                 model.grid.updateInterval = update_interval;
 
 
-                ((LBMUniformGrid) model.grid).updateLBParameters();
+                model.grid.updateParameters();
             }
         }
 
@@ -137,6 +166,11 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel8 = new javax.swing.JLabel();
         delta_t_tf = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        delta_x_tf = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        fixedMachNumber_cb = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
@@ -145,9 +179,6 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel20 = new javax.swing.JLabel();
         width_tf = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        delta_x_tf = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
         updateI_tf = new javax.swing.JTextField();
@@ -159,7 +190,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("JFlowSim - ConfigDialog");
         setIconImage(null);
-        setMinimumSize(new java.awt.Dimension(350, 411));
+        setMinimumSize(new java.awt.Dimension(414, 442));
         setResizable(false);
 
         apply_button.setText("apply");
@@ -184,7 +215,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         });
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("physics"));
-        jPanel4.setLayout(new java.awt.GridLayout(4, 3, 0, 8));
+        jPanel4.setLayout(new java.awt.GridLayout(6, 3, 0, 8));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -222,23 +253,50 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel4.setText("[m²/s]");
         jPanel4.add(jLabel4);
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("delta t");
         jPanel4.add(jLabel8);
 
         delta_t_tf.setText("1");
+        delta_t_tf.setEnabled(false);
         jPanel4.add(delta_t_tf);
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("[m]");
         jPanel4.add(jLabel5);
 
+        jLabel24.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel24.setText("delta x");
+        jPanel4.add(jLabel24);
+
+        delta_x_tf.setText("0.1");
+        jPanel4.add(delta_x_tf);
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel23.setText("[m]");
+        jPanel4.add(jLabel23);
+
+        jLabel25.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel25.setText("ratio dx / dt");
+        jPanel4.add(jLabel25);
+
+        fixedMachNumber_cb.setSelected(true);
+        fixedMachNumber_cb.setText("lock");
+        fixedMachNumber_cb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fixedMachNumber_cbActionPerformed(evt);
+            }
+        });
+        jPanel4.add(fixedMachNumber_cb);
+
         jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("dimensions"));
         jPanel6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel6.setLayout(new java.awt.GridLayout(3, 3, 0, 8));
+        jPanel6.setLayout(new java.awt.GridLayout(2, 3, 0, 8));
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -247,6 +305,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
 
         length_tf.setEditable(false);
         length_tf.setText("1.0");
+        length_tf.setEnabled(false);
         jPanel6.add(length_tf);
 
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -260,23 +319,12 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
 
         width_tf.setEditable(false);
         width_tf.setText("1.0");
+        width_tf.setEnabled(false);
         jPanel6.add(width_tf);
 
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel21.setText("[m]");
         jPanel6.add(jLabel21);
-
-        jLabel24.setFont(new java.awt.Font("Tahoma", 1, 11));
-        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel24.setText("delta x");
-        jPanel6.add(jLabel24);
-
-        delta_x_tf.setText("0.1");
-        jPanel6.add(delta_x_tf);
-
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel23.setText("[m]");
-        jPanel6.add(jLabel23);
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("visualization"));
         jPanel8.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -294,12 +342,13 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel28.setText("[-]");
         jPanel8.add(jLabel28);
 
-        jLabel30.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel30.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel30.setText("writer update");
         jPanel8.add(jLabel30);
 
         writerU_tf.setText("1000");
+        writerU_tf.setEnabled(false);
         jPanel8.add(writerU_tf);
 
         jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -313,20 +362,25 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(cancel_button)
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(apply_button)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ok_button))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                        .addGap(16, 16, 16))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cancel_button)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(apply_button)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ok_button))
+                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE))
+                        .addGap(16, 16, 16))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,9 +391,9 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -366,11 +420,20 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
             this.dispose();
         }
     }//GEN-LAST:event_ok_buttonActionPerformed
+
+    private void fixedMachNumber_cbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fixedMachNumber_cbActionPerformed
+       if( !fixedMachNumber_cb.isSelected() )
+           delta_t_tf.setEnabled(true);
+       else
+           delta_t_tf.setEnabled(false);
+    }//GEN-LAST:event_fixedMachNumber_cbActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton apply_button;
     private javax.swing.JButton cancel_button;
     private javax.swing.JTextField delta_t_tf;
     private javax.swing.JTextField delta_x_tf;
+    private javax.swing.JCheckBox fixedMachNumber_cb;
     private javax.swing.JTextField gravity_x_tf;
     private javax.swing.JTextField gravity_y_tf;
     private javax.swing.JLabel jLabel1;
@@ -381,6 +444,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;

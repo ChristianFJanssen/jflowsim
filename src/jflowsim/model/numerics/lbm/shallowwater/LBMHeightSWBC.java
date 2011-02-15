@@ -45,7 +45,7 @@ public class LBMHeightSWBC extends BoundaryCondition {
                         - myGrid.ftemp[nodeIndex + LbEQ.SE]
                         - myGrid.ftemp[nodeIndex + LbEQ.SW]) / h;
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 myGrid.f[nodeIndex + LbEQ.W] = -myGrid.ftemp[nodeIndex + LbEQ.E] + feq[LbEQ.E] + feq[LbEQ.W];
                 myGrid.f[nodeIndex + LbEQ.NW] = -myGrid.ftemp[nodeIndex + LbEQ.SE] + feq[LbEQ.SE] + feq[LbEQ.NW];
@@ -73,7 +73,7 @@ public class LBMHeightSWBC extends BoundaryCondition {
                         - myGrid.ftemp[nodeIndex + LbEQ.SE]
                         - myGrid.ftemp[nodeIndex + LbEQ.SW]) / h;
 
-                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.v_scale, myGrid.gravity);
+                LbEQ.getBGKEquilibriumShallowWater(h, vx, vy, feq, myGrid.dv, myGrid.gravity);
 
                 myGrid.f[nodeIndex + LbEQ.E] = -myGrid.ftemp[nodeIndex + LbEQ.W] + feq[LbEQ.W] + feq[LbEQ.E];
                 myGrid.f[nodeIndex + LbEQ.NE] = -myGrid.ftemp[nodeIndex + LbEQ.SW] + feq[LbEQ.SW] + feq[LbEQ.NE];

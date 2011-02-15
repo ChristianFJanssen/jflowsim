@@ -18,11 +18,7 @@ public class PoiseuilleTestCase extends TestCase {
         grid.setGravity(1.0, 0.0 /* m/s^2 */);
         grid.setViscosity(0.005 /* m^2/s */);
         grid.setTimeStep(0.0001 /* s */);
-
-        grid.updateLBParameters();
-
-        this.initFluid(grid);
-
+        grid.updateParameters();
         grid.periodicX = true;
 
         grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.NORTH));
@@ -32,17 +28,9 @@ public class PoiseuilleTestCase extends TestCase {
 
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {
-
-                LbEQ.getBGKEquilibrium(1., 0., 0., feq);
-
-                for (int dir = 0; dir < 9; dir++) {
-                    grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                    grid.ftemp[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                }
+                grid.init(i, j, 1. / 3., 0.0, 0.0);
             }
         }
-
         return grid;
-
     }
 }

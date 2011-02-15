@@ -36,7 +36,7 @@ public class TaylorGreenVortexTestCase extends TestCase {
             grid.get(grid.nx - 1, y).initBoundary();
         }
 
-        grid.v_scale = 1.0;
+        grid.dv = 1.0;
 
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {

@@ -15,6 +15,7 @@ public class GraphicGrid extends GraphicObject {
     private UniformGrid grid;
     private DecimalFormat df = new DecimalFormat("0.0000");
     private DecimalFormat df2 = new DecimalFormat("0.0");
+    private DecimalFormat dfExpo = new DecimalFormat("0.00E0");
 
     public GraphicGrid(UniformGrid grid, DisplayStyleManager displayStyleManager) {
         this.grid = grid;
@@ -46,10 +47,14 @@ public class GraphicGrid extends GraphicObject {
         // Head-up-Display
         // ----------------------------------------------------------------------------- //
         hud.drawText(grid.getClass().getSimpleName());
+        hud.drawText(grid.testcase);
         hud.drawText("length: " + grid.getLength() + " [m]  width:" + grid.getWidth() + " [m]");
         hud.drawText("dof: " + grid.nx + "x" + grid.ny + " | " + grid.nx * grid.ny + " | delta:" + grid.dx);
-        hud.drawText("real time: " + df.format(grid.real_time) + " [secs]");
+        hud.drawText("real time: " + df.format(grid.real_time) + " [s]");
         hud.drawText("MNUPS: " + df2.format(grid.mnups));
+        hud.drawText("Viscosity: " + dfExpo.format(grid.viscosity) + " [m^2/s]");
+        hud.drawText("Gravity: " + grid.gravityX + " " + grid.gravityY + " [m/s^2]");
+        hud.drawText("Time step: " + grid.dt + " [s]");
 
         grid.updateHeadUpDisplay(hud);
     }

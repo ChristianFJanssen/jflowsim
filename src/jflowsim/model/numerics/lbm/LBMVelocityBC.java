@@ -21,12 +21,14 @@ public class LBMVelocityBC extends BoundaryCondition {
 
         int nodeIndex;
 
+        double vScale = myGrid.dv;
+
         double feq[] = new double[9];
 
         if (type == EAST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                LbEQ.getBGKEquilibrium(myGrid.getDensity((myGrid.nx - 1), j), vx, vy, feq);
+                LbEQ.getBGKEquilibrium(myGrid.getDensity((myGrid.nx - 1), j), vx/vScale, vy/vScale, feq);
                 nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
 
                 for (int dir = 0; dir < 9; dir++) {
@@ -36,7 +38,7 @@ public class LBMVelocityBC extends BoundaryCondition {
         } else if (type == WEST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
-                LbEQ.getBGKEquilibrium(myGrid.getDensity(0, j), vx, vy, feq);
+                LbEQ.getBGKEquilibrium(myGrid.getDensity(0, j), vx/vScale, vy/vScale, feq);
                 nodeIndex = (0 + j * myGrid.nx) * 9;
 
                 for (int dir = 0; dir < 9; dir++) {
@@ -46,7 +48,7 @@ public class LBMVelocityBC extends BoundaryCondition {
         } else if (type == NORTH) {
             for (int i = 0; i < myGrid.nx; i++) {
 
-                LbEQ.getBGKEquilibrium(myGrid.getDensity(i, myGrid.ny - 1), vx, vy, feq);
+                LbEQ.getBGKEquilibrium(myGrid.getDensity(i, myGrid.ny - 1), vx/vScale, vy/vScale, feq);
                 nodeIndex = (i + (myGrid.ny - 1) * myGrid.nx) * 9;
 
                 for (int dir = 0; dir < 9; dir++) {
@@ -56,7 +58,7 @@ public class LBMVelocityBC extends BoundaryCondition {
         } else if (type == SOUTH) {
             for (int i = 0; i < myGrid.nx; i++) {
 
-                LbEQ.getBGKEquilibrium(myGrid.getDensity(i, 0), vx, vy, feq);
+                LbEQ.getBGKEquilibrium(myGrid.getDensity(i, 0), vx/vScale, vy/vScale, feq);
                 nodeIndex = (i) * 9;
 
                 for (int dir = 0; dir < 9; dir++) {

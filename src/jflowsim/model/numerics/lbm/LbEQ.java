@@ -65,11 +65,6 @@ public class LbEQ {
     }
 
     public static void getBGKEquilibrium(double rho, double vx, double vy, double f[]) {
-
-//        for (int i = STARTDIR; i <= ENDDIR; i++) {
-//            f[i] = w[i] * rho * (1. + 3. * (LbEQ.ex[i] * vx + LbEQ.ey[i] * vy) + 9. / 2. * Math.pow((LbEQ.ex[i] * vx + LbEQ.ey[i] * vy), 2) - 3. / 2. * (vx * vx + vy * vy));
-//        }
-
         f[ZERO] = c4o9 * rho * (1. - 1.5 * (vx * vx + vy * vy));
         f[E] = c1o9 * rho * (1. + 3.0 * vx + 4.5 * vx * vx - 1.5 * (vx * vx + vy * vy));
         f[N] = c1o9 * rho * (1. + 3.0 * vy + 4.5 * vy * vy - 1.5 * (vx * vx + vy * vy));
@@ -79,14 +74,9 @@ public class LbEQ {
         f[NW] = c1o36 * rho * (1. + 3.0 * (-vx + vy) + 4.5 * (-vx + vy) * (-vx + vy) - 1.5 * (vx * vx + vy * vy));
         f[SW] = c1o36 * rho * (1. - 3.0 * (vx + vy) + 4.5 * (vx + vy) * (vx + vy) - 1.5 * (vx * vx + vy * vy));
         f[SE] = c1o36 * rho * (1. - 3.0 * (-vx + vy) + 4.5 * (-vx + vy) * (-vx + vy) - 1.5 * (vx * vx + vy * vy));
-
     }
 
     public static void getBGKEquilibriumTemperature(double T, double vx, double vy, double g[]) {
-//        for (int i = 0; i < 5; i++) {
-//            g[i] = wT[i] * T * (1. + 3. * (LbEQ.ex[i] * vx + LbEQ.ey[i] * vy));
-//        }
-
         g[0] = c1o3 * T;
         g[1] = c1o6 * T * (1. + 3. * vx);
         g[2] = c1o6 * T * (1. - 3. * vx);
@@ -95,11 +85,6 @@ public class LbEQ {
     }
 
     public static void getBGKEquilibriumShallowWater(double h, double vx, double vy, double feq[], double v_scale, double gravity) {
-
-        // Normierung
-//        vx = vx * v_scale / h;
-//        vy = vy * v_scale / h;
-
         vx = vx * v_scale;
         vy = vy * v_scale;
 

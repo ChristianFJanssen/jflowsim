@@ -21,23 +21,25 @@ public class LBMMovingWallBC extends BoundaryCondition {
 
         int nodeIndex;
 
+                double vScale = myGrid.dv;
+
         if (type == EAST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
                 nodeIndex = ((myGrid.nx - 1) + j * myGrid.nx) * 9;
 
-                myGrid.f[nodeIndex + LbEQ.W] = myGrid.ftemp[nodeIndex + LbEQ.E] - 2. / 3. * vx;
-                myGrid.f[nodeIndex + LbEQ.NW] = myGrid.ftemp[nodeIndex + LbEQ.SE] - 1. / 6. * (vx - vy);
-                myGrid.f[nodeIndex + LbEQ.SW] = myGrid.ftemp[nodeIndex + LbEQ.NE] - 1. / 6. * (vx + vy);
+                myGrid.f[nodeIndex + LbEQ.W] = myGrid.ftemp[nodeIndex + LbEQ.E] - 2. / 3. * vx/vScale;
+                myGrid.f[nodeIndex + LbEQ.NW] = myGrid.ftemp[nodeIndex + LbEQ.SE] - 1. / 6. * (vx - vy)/vScale;
+                myGrid.f[nodeIndex + LbEQ.SW] = myGrid.ftemp[nodeIndex + LbEQ.NE] - 1. / 6. * (vx + vy)/vScale;
             }
         } else if (type == WEST) {
             for (int j = 0; j < myGrid.ny; j++) {
 
                 nodeIndex = (0 + j * myGrid.nx) * 9;
 
-                myGrid.f[nodeIndex + LbEQ.E] = myGrid.ftemp[nodeIndex + LbEQ.W] + 2. / 3. * vx;
-                myGrid.f[nodeIndex + LbEQ.NE] = myGrid.ftemp[nodeIndex + LbEQ.SW] + 1. / 6. * (vx + vy);
-                myGrid.f[nodeIndex + LbEQ.SE] = myGrid.ftemp[nodeIndex + LbEQ.NW] + 1. / 6. * (vx - vy);
+                myGrid.f[nodeIndex + LbEQ.E] = myGrid.ftemp[nodeIndex + LbEQ.W] + 2. / 3. * vx/vScale;
+                myGrid.f[nodeIndex + LbEQ.NE] = myGrid.ftemp[nodeIndex + LbEQ.SW] + 1. / 6. * (vx + vy)/vScale;
+                myGrid.f[nodeIndex + LbEQ.SE] = myGrid.ftemp[nodeIndex + LbEQ.NW] + 1. / 6. * (vx - vy)/vScale;
             }
         } else if (type == NORTH) {
 
@@ -45,18 +47,18 @@ public class LBMMovingWallBC extends BoundaryCondition {
 
                 nodeIndex = (i + (myGrid.ny - 1) * myGrid.nx) * 9;
 
-                myGrid.f[nodeIndex + LbEQ.S] = myGrid.ftemp[nodeIndex + LbEQ.N] - 2. / 3. * vy;
-                myGrid.f[nodeIndex + LbEQ.SE] = myGrid.ftemp[nodeIndex + LbEQ.NW] + 1. / 6. * (vx - vy);
-                myGrid.f[nodeIndex + LbEQ.SW] = myGrid.ftemp[nodeIndex + LbEQ.NE] - 1. / 6. * (vx + vy);
+                myGrid.f[nodeIndex + LbEQ.S] = myGrid.ftemp[nodeIndex + LbEQ.N] - 2. / 3. * vy/vScale;
+                myGrid.f[nodeIndex + LbEQ.SE] = myGrid.ftemp[nodeIndex + LbEQ.NW] + 1. / 6. * (vx - vy)/vScale;
+                myGrid.f[nodeIndex + LbEQ.SW] = myGrid.ftemp[nodeIndex + LbEQ.NE] - 1. / 6. * (vx + vy)/vScale;
             }
         } else if (type == SOUTH) {
             for (int i = 0; i < myGrid.nx; i++) {
 
                 nodeIndex = (i) * 9;
 
-                myGrid.f[nodeIndex + LbEQ.N] = myGrid.ftemp[nodeIndex + LbEQ.S] + 2. / 3. * vy;
-                myGrid.f[nodeIndex + LbEQ.NE] = myGrid.ftemp[nodeIndex + LbEQ.SW] + 1. / 6. * (vx + vy);
-                myGrid.f[nodeIndex + LbEQ.NW] = myGrid.ftemp[nodeIndex + LbEQ.SE] - 1. / 6. * (vx - vy);
+                myGrid.f[nodeIndex + LbEQ.N] = myGrid.ftemp[nodeIndex + LbEQ.S] + 2. / 3. * vy/vScale;
+                myGrid.f[nodeIndex + LbEQ.NE] = myGrid.ftemp[nodeIndex + LbEQ.SW] + 1. / 6. * (vx + vy)/vScale;
+                myGrid.f[nodeIndex + LbEQ.NW] = myGrid.ftemp[nodeIndex + LbEQ.SE] - 1. / 6. * (vx - vy)/vScale;
             }
         }
     }

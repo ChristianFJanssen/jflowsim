@@ -18,41 +18,26 @@ public class ChannelFlowTestCase extends TestCase {
 
         grid.testcase = this.getClass().getSimpleName();
 
+        // 1. simulation parameters
         grid.setGravity(0.0, 0.0 /* m/s^2 */);
         grid.setViscosity(0.000001 /* m^2/s */);
         grid.setTimeStep(0.0001 /* s */);
+        grid.updateParameters();
 
-        grid.updateLBParameters();
-
-        this.initFluid(grid);
+        // 2. boundary conditions
+        double inflowVelo = 1.0; /* m/s */      
        
         grid.addBC(new LBMPressureBC(grid, BoundaryCondition.EAST, 1.0));
-        grid.addBC(new LBMVelocityBC(grid, BoundaryCondition.WEST, 0.05, 0.0));
+        grid.addBC(new LBMVelocityBC(grid, BoundaryCondition.WEST, inflowVelo /* m/s */, 0.0));
         grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.NORTH));
         grid.addBC(new LBMNoSlipBC(grid, BoundaryCondition.SOUTH));
 
-
-        // Initial conditions
-
+        // 3. initial conditions
         for (int i = 0; i < grid.nx; i++) {
             for (int j = 0; j < grid.ny; j++) {
-
-                //LbEQ.getBGKEquilibrium(1.0, 4. * grid.v_in_lbm * (0.25 - Math.pow((0.0 + grid.ny) * 0.5 / (grid.ny - 0.0) - (double) (j) / (grid.ny - 0.0), 2.)), 0., grid.getF(i, j));
-                //LbEQ.getBGKEquilibrium(1.0, 4. * grid.v_in_lbm * (0.25 - Math.pow((0.0 + grid.ny) * 0.5 / (grid.ny - 0.0) - (double) (j) / (grid.ny - 0.0), 2.)), 0., grid.getFtemp(i, j));
-
-                double[] feq = new double[9];
-
-                LbEQ.getBGKEquilibrium(1.0, 4. * grid.v_in_lbm * (0.25 - Math.pow((0.0 + grid.ny) * 0.5 / (grid.ny - 0.0) - (double) (j) / (grid.ny - 0.0), 2.)), 0., feq);
-
-                for (int dir = 0; dir < 9; dir++) {
-                    grid.f[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                    grid.ftemp[(i + j * grid.nx) * 9 + dir] = feq[dir];
-                }
-
+                grid.init(i,j,1./3.,inflowVelo,0.0);
             }
         }
-
         return grid;
-
     }
 }

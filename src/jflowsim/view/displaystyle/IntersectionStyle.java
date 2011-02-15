@@ -64,8 +64,8 @@ public class IntersectionStyle extends DisplayStyle {
 
 
 
-                    if (grid.getType(x, y) == GridNodeType.SOLID) {
-                        c = Color.BLUE;
+                    if (grid.getType(x, y) <= GridNodeType.SOLID) {
+                        c = Color.BLACK;
                     } else {
                                             if (scalar < min) {
                         min = scalar;

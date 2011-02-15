@@ -30,16 +30,22 @@ public class AcmGrid extends UniformGrid {
         System.out.println("AcmGrid::allocateMemoery() nx:" + nx + " ny:" + ny + " - " + nx * ny);
     }
 
+    public void updateParameters() {
+    }
+
+    public void refineGrid(double scaleFactor) {
+    }
+
     public double getScalar(int x, int y, int type) {
 
         if (type == Scalar.V_X) {
-            return get(x,y).getVeloX();
+            return get(x, y).getVeloX();
         } else if (type == Scalar.V_Y) {
-            return get(x,y).getVeloY();
+            return get(x, y).getVeloY();
         } else if (type == Scalar.V) {
-            return Math.sqrt(Math.pow(get(x,y).getVeloX(), 2.0) + Math.pow(get(x,y).getVeloY(), 2.0));
+            return Math.sqrt(Math.pow(get(x, y).getVeloX(), 2.0) + Math.pow(get(x, y).getVeloY(), 2.0));
         } else if (type == Scalar.RHO) {
-            return get(x,y).getP(0);
+            return get(x, y).getP(0);
         } else if (type == Scalar.GRID_TYPE) {
             return this.getType(x, y);
         } else if (type == Scalar.T) {

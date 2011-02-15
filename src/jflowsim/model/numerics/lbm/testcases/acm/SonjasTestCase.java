@@ -35,7 +35,7 @@ public class SonjasTestCase extends TestCase {
             grid.get(grid.nx - 1, y).initBoundary();
         }
 
-        grid.v_scale = 1.0;
+        grid.dv = 1.0;
 
         double vory = 0.5 * grid.nx + 0.5 * grid.dx;
         double vorx = 0.5 * grid.ny + 0.5 * grid.dx;
