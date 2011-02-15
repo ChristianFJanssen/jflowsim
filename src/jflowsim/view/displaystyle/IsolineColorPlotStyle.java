@@ -35,6 +35,22 @@ public class IsolineColorPlotStyle extends DisplayStyle {
             this.min = Double.MAX_VALUE;
             this.max = -Double.MAX_VALUE;
 
+
+            if (tmp_min >= Double.MAX_VALUE || tmp_max <= -Double.MAX_VALUE) {
+                for (int x = 0; x < grid.nx; x++)
+                {
+                    for (int y = 0; y < grid.ny; y++) {
+                        double scalar = grid.getScalar(x, y, scalar_type);
+                        if (scalar < this.tmp_min) {
+                            this.tmp_min = scalar;
+                        }
+                        if (scalar > this.tmp_max) {
+                            this.tmp_max = scalar;
+                        }
+                    }
+                }
+            }
+
             double schrittweite = Math.abs((tmp_max - tmp_min) / 20.0);
             if (schrittweite < 1) {
                 if (schrittweite < 0.1) {

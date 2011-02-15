@@ -82,6 +82,7 @@ public class GraphicViewer extends JPanel implements Observer {
     
     public void paint(Graphics g) {
         super.paint(g);
+        
         for (int i = 0; i < graphicList.size(); i++) {
             graphicList.get(i).paint(g, trafo);
         }

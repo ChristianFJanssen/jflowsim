@@ -103,7 +103,7 @@ public class LBMNavierStokesSolver extends LBMSolver {
                 }
 
             } catch (Exception ex) {
-                System.out.println("OVERALL EXCEPTION " + ex);
+                //System.out.println("OVERALL EXCEPTION " + ex);
                 return;
             }
         }

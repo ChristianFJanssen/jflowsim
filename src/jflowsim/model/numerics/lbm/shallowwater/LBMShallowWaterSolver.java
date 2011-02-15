@@ -100,7 +100,7 @@ public class LBMShallowWaterSolver extends LBMSolver {
                 }
 
             } catch (Exception ex) {
-                System.out.println("OVERALL EXCEPTION " + ex);
+                //System.out.println("OVERALL EXCEPTION " + ex);
                 return;
             }
         }

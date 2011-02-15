@@ -40,13 +40,14 @@ public class ModelManager extends Observable implements Serializable, Observer {
     }
 
     public void map2Grid() {
-        
+
         if (this.grid != null) {
 
             for (int x = 0; x < grid.nx; x++) {
                 for (int y = 0; y < grid.ny; y++) {
-                    if( grid.getType(x, y) == GridNodeType.SOLID )
+                    if (grid.getType(x, y) == GridNodeType.SOLID) {
                         grid.setType(x, y, GridNodeType.FLUID);
+                    }
                 }
             }
             // map Geometry to Grid
@@ -57,17 +58,20 @@ public class ModelManager extends Observable implements Serializable, Observer {
     }
 
     public void removeGrid() {
-        if (this.grid != null) {            
+        if (this.grid != null) {
             this.grid = null;
             this.writerManager.setGrid(null);
         }
     }
 
     public void startSimulation(Solver solver) {
-        if (grid != null) {
-            this.solver = solver;
-            this.solver.startSimulation();
-        }
+
+        System.out.println("startSimulation");
+
+        //if (solver == null && grid != null) {
+        this.solver = solver;
+        this.solver.startSimulation();
+        //}
     }
 
     public void stopSimulation() {
@@ -108,18 +112,18 @@ public class ModelManager extends Observable implements Serializable, Observer {
             }
         }
 
-        if(grid !=null){
-            if(grid.getMinX() < min.getX()){
+        if (grid != null) {
+            if (grid.getMinX() < min.getX()) {
                 min.setX(grid.getMinX());
             }
-            if(grid.getMinY() < min.getY()){
+            if (grid.getMinY() < min.getY()) {
                 min.setY(grid.getMinY());
             }
 
-            if(grid.getMaxX() > max.getX()){
+            if (grid.getMaxX() > max.getX()) {
                 max.setX(grid.getMaxX());
             }
-            if(grid.getMaxY() > max.getY()){
+            if (grid.getMaxY() > max.getY()) {
                 max.setY(grid.getMaxY());
             }
         }
@@ -169,6 +173,6 @@ public class ModelManager extends Observable implements Serializable, Observer {
     }
 
     public WriterManager getWriterManager() {
-            return this.writerManager;
+        return this.writerManager;
     }
 }

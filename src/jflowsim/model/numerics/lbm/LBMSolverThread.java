@@ -29,7 +29,7 @@ public abstract class LBMSolverThread extends Thread {
         startX = myrank * grid.nx / num_of_threads;
         endX = (myrank + 1) * grid.nx / num_of_threads;
 
-        System.out.println(startX + " " + endX);
+        //System.out.println(startX + " " + endX);
     }
 
 

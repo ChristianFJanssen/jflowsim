@@ -244,6 +244,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="length_tf">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="1.0"/>
           </Properties>
         </Component>
@@ -264,6 +265,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="width_tf">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="1.0"/>
           </Properties>
         </Component>

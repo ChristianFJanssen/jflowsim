@@ -13,10 +13,18 @@ public abstract class DisplayStyle {
    protected boolean enabled = false;
 
     public DisplayStyle() {
+        this.min = Double.MAX_VALUE;
+        this.max = -Double.MAX_VALUE;
+        this.tmp_min = Double.MAX_VALUE;
+        this.tmp_max = -Double.MAX_VALUE;
         this.enabled = false;
     }
 
-    public void setEnabled(boolean enabled){        
+    public void setEnabled(boolean enabled){
+        this.min = Double.MAX_VALUE;
+        this.max = -Double.MAX_VALUE;
+        this.tmp_min = Double.MAX_VALUE;
+        this.tmp_max = -Double.MAX_VALUE;
         this.enabled = enabled;
     }
 

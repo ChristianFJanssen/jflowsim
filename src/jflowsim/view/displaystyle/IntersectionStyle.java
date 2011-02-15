@@ -30,6 +30,21 @@ public class IntersectionStyle extends DisplayStyle {
             this.min = Double.MAX_VALUE;
             this.max = -Double.MAX_VALUE;
 
+            if (tmp_min >= Double.MAX_VALUE || tmp_max <= -Double.MAX_VALUE) {
+                for (int x = 0; x < grid.nx; x++)
+                {
+                    for (int y = 0; y < grid.ny; y++) {
+                        double scalar = grid.getScalar(x, y, scalar_type);
+                        if (scalar < this.tmp_min) {
+                            this.tmp_min = scalar;
+                        }
+                        if (scalar > this.tmp_max) {
+                            this.tmp_max = scalar;
+                        }
+                    }
+                }
+            }
+
             double x1_view = trafo.transformWorldToViewXCoord(grid.getMinX(), grid.getMinY(), false);
             double y1_view = trafo.transformWorldToViewYCoord(grid.getMinX(), grid.getMinY(), false);
             double x2_view = trafo.transformWorldToViewXCoord(grid.getMaxX(), grid.getMaxY(), false);

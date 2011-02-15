@@ -28,18 +28,34 @@ public class ArrowColorPlotStyle extends DisplayStyle {
             this.min = Double.MAX_VALUE;
             this.max = -Double.MAX_VALUE;
 
-            for (int x = 0; x < grid.nx; x += 2)// x++)
+            if (tmp_min >= Double.MAX_VALUE || tmp_max <= -Double.MAX_VALUE) {                
+                for (int x = 0; x < grid.nx; x += 2)
+                {
+                    for (int y = 0; y < grid.ny; y += 2) {
+                        double v = grid.getScalar(x, y, Scalar.V);
+                        if (v < this.tmp_min) {
+                            this.tmp_min = v;
+                        }
+                        if (v > this.tmp_max) {
+                            this.tmp_max = v;
+                        }
+                    }
+                }
+            }
+            
+
+            for (int x = 0; x < grid.nx; x += 2)
             {
-                for (int y = 0; y < grid.ny; y += 2/* y++ */) {                    
+                for (int y = 0; y < grid.ny; y += 2) {
                     double cx = grid.transXIndex2Coord(x);
                     double cy = grid.transYIndex2Coord(y);
 
                     double view_cx = trafo.transformWorldToViewXCoord(cx, cy, false);
                     double view_cy = trafo.transformWorldToViewYCoord(cx, cy, false);
 
-                    if (grid.getType(x,y) != GridNodeType.SOLID) {
+                    if (grid.getType(x, y) != GridNodeType.SOLID) {
 
-                        double v = grid.getScalar(x,y,Scalar.V);
+                        double v = grid.getScalar(x, y, Scalar.V);
                         if (v < min) {
                             min = v;
                         }
@@ -51,8 +67,8 @@ public class ArrowColorPlotStyle extends DisplayStyle {
                         Color c = getLineColor(v);
                         g.setColor(c);
 
-                        double vx = grid.getScalar(x,y, Scalar.V_X);
-                        double vy = grid.getScalar(x,y, Scalar.V_Y);
+                        double vx = grid.getScalar(x, y, Scalar.V_X);
+                        double vy = grid.getScalar(x, y, Scalar.V_Y);
 
                         int x1 = (int) Math.round((view_cx + scale * vx));
                         int y1 = (int) Math.round((view_cy - scale * vy));
@@ -77,8 +93,6 @@ public class ArrowColorPlotStyle extends DisplayStyle {
     protected Color getLineColor(double scalar) {
         return ColorValue.getColor4Value(tmp_min, tmp_max, scalar);
     }
-
-
 
     private double getAngle(Point2D p1, Point2D p2) {
 

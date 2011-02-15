@@ -51,6 +51,7 @@ public class MainWindow extends javax.swing.JFrame {
     private MainWindow mainWindow;
     private DisplayStyleManager displayStyleManager;
     private ConfigDialog configDialog;
+    private String _solverName;
 
     // Konstruktor
     public MainWindow(GraphicViewer viewer, ModelManager modelManager) {
@@ -85,7 +86,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.setSize(1024, 800);
         this.setMinimumSize(new Dimension(640, 480));
 
-         this.setVisible(true);      
+        this.setVisible(true);
     }
 
     private void createToolBarsAndMenus() {
@@ -229,8 +230,10 @@ public class MainWindow extends javax.swing.JFrame {
 
                     public void actionPerformed(ActionEvent e) {
 
-                        if (modelManager.solver == null) {
+                        if (!modelManager.hasGrid()) {
                             System.out.println("start solver:" + solverName + " testCase:" + testCaseName);
+
+                            _solverName = solverName;
 
                             SolverBuilder builder = SolverFactory.getInstance().getBuilder(solverName);
                             UniformGrid grid = builder.createGrid(testCaseName);
@@ -291,13 +294,12 @@ public class MainWindow extends javax.swing.JFrame {
 
             public void actionPerformed(ActionEvent e) {
 
-                if (modelManager.solver != null) {
+                if (modelManager.hasGrid()) {
 
-                    // 1. delete old simulation
-                    String solverName = modelManager.solver.getClass().getSimpleName();
+                    // 1. delete old simulation                    
                     String testCaseName = modelManager.grid.testcase;
 
-                    System.out.println("restart: " + solverName + " " + testCaseName);
+                    System.out.println("restart: " + _solverName + " " + testCaseName);
 
                     modelManager.stopSimulation();
 
@@ -313,7 +315,7 @@ public class MainWindow extends javax.swing.JFrame {
                     modelManager.removeGrid();
 
                     // 2. restart simulation
-                    SolverBuilder builder = SolverFactory.getInstance().getBuilder(solverName);
+                    SolverBuilder builder = SolverFactory.getInstance().getBuilder(_solverName);
                     UniformGrid grid = builder.createGrid(testCaseName);
 
                     GraphicGrid graphic = new GraphicGrid(grid, displayStyleManager);
@@ -338,7 +340,7 @@ public class MainWindow extends javax.swing.JFrame {
         action = new AbstractAction("config", ImageUtilities.createImageIcon("config", 22, 22)) {
 
             public void actionPerformed(ActionEvent e) {
-                if (modelManager.solver != null) {
+                if (modelManager.hasGrid()) {
                     configDialog.setVisible(true);
                 }
             }
@@ -349,7 +351,40 @@ public class MainWindow extends javax.swing.JFrame {
 
 
 
-        // preferences-system
+        action = new AbstractAction("pause", ImageUtilities.createImageIcon("pause", 22, 22)) {
+
+            public void actionPerformed(ActionEvent e) {
+                if (modelManager.hasGrid()) {
+                    modelManager.stopSimulation();
+                    repaint();
+                }
+            }
+        };
+
+        simulationMenu.add(action);
+        simulationToolBar.add(action);
+
+
+        action = new AbstractAction("continue", ImageUtilities.createImageIcon("continue", 22, 22)) {
+
+            public void actionPerformed(ActionEvent e) {
+                if (modelManager.solver == null && modelManager.hasGrid()) {
+
+                    SolverBuilder builder = SolverFactory.getInstance().getBuilder(_solverName);
+                    Solver solver = builder.createSolver(modelManager.grid);
+                    solver.addObserver(viewer);
+                    modelManager.startSimulation(solver);
+
+                    configDialog.update();
+                    repaint();
+
+                }
+            }
+        };
+
+        simulationMenu.add(action);
+        simulationToolBar.add(action);
+
 
         menuBar.add(simulationMenu);
         toolBarPanel.add(simulationToolBar);
@@ -375,11 +410,10 @@ public class MainWindow extends javax.swing.JFrame {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     if (scalar == Scalar.OFF) {
                         displayStyleManager.deactivateScalarStyle(index);
-                        repaint();
                     } else {
                         displayStyleManager.activateScalarStyle(index, scalar);
-                        repaint();
                     }
+                    repaint();
                 }
             }
         }
@@ -404,8 +438,7 @@ public class MainWindow extends javax.swing.JFrame {
                     item.setSelected(true);
                     displayStyleManager.activateScalarStyle(0, 0);
                 } else if (i > 0 && j == scalars.length - 1) {
-                }
-                else if (i>0 && j == scalars.length - 1) {
+                } else if (i > 0 && j == scalars.length - 1) {
                     item.setSelected(true);
                 }
             }
@@ -426,11 +459,11 @@ public class MainWindow extends javax.swing.JFrame {
 
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     displayStyleManager.activateVecotrStyle(index);
-                    repaint();
                 } else {
                     displayStyleManager.deactivateVecotrStyle(index);
-                    repaint();
                 }
+
+                repaint();
             }
         }
 

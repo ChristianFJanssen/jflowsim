@@ -87,6 +87,8 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
             double width = getDoubleValueFromTextField(width_tf);
             double delta_x = getDoubleValueFromTextField(delta_x_tf);
 
+
+
             int update_interval = model.grid.updateInterval = getIntegerValueFromTextField(updateI_tf);
             int writer_update = getIntegerValueFromTextField(writerU_tf);
 
@@ -98,6 +100,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
 
                 // set length, width, delta_x
                 // ...
+
 
                 model.grid.updateInterval = update_interval;
 
@@ -183,7 +186,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("physics"));
         jPanel4.setLayout(new java.awt.GridLayout(4, 3, 0, 8));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("gravity in x");
         jPanel4.add(jLabel2);
@@ -195,7 +198,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel1.setText("[m/s²]");
         jPanel4.add(jLabel1);
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("gravity in y");
         jPanel4.add(jLabel6);
@@ -242,6 +245,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel22.setText("length");
         jPanel6.add(jLabel22);
 
+        length_tf.setEditable(false);
         length_tf.setText("1.0");
         jPanel6.add(length_tf);
 
@@ -254,6 +258,7 @@ public class ConfigDialog extends javax.swing.JDialog implements WindowListener 
         jLabel20.setText("width");
         jPanel6.add(jLabel20);
 
+        width_tf.setEditable(false);
         width_tf.setText("1.0");
         jPanel6.add(width_tf);
 

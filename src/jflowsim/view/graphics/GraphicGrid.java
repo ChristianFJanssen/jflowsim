@@ -25,6 +25,7 @@ public class GraphicGrid extends GraphicObject {
     // draw grid
     public void paint(Graphics g, WorldViewTransformator2D trafo) {
 
+        
         double xView1 = trafo.transformWorldToViewXCoord(grid.getMinX(), grid.getMinY(), true);
         double yView1 = trafo.transformWorldToViewYCoord(grid.getMinX(), grid.getMinY(), true);
         double xView2 = trafo.transformWorldToViewXCoord(grid.getMaxX(), grid.getMaxY(), true);
