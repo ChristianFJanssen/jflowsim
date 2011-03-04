@@ -3,7 +3,6 @@ package jflowsim.view.displaystyle;
 import jflowsim.view.utilities.ColorValue;
 import jflowsim.model.algebra.WorldViewTransformator2D;
 import jflowsim.model.geometry2d.Point2D;
-import jflowsim.model.numerics.utilities.GridNodeType;
 import jflowsim.model.numerics.UniformGrid;
 import jflowsim.model.numerics.utilities.Scalar;
 import java.awt.Color;
@@ -28,10 +27,12 @@ public class ArrowColorPlotStyle extends DisplayStyle {
             this.min = Double.MAX_VALUE;
             this.max = -Double.MAX_VALUE;
 
-            if (tmp_min >= Double.MAX_VALUE || tmp_max <= -Double.MAX_VALUE) {                
-                for (int x = 0; x < grid.nx; x += 2)
+            int offset = 5;
+
+            if (tmp_min >= Double.MAX_VALUE || tmp_max <= -Double.MAX_VALUE) {
+                for (int x = 0; x < grid.nx; x += offset)
                 {
-                    for (int y = 0; y < grid.ny; y += 2) {
+                    for (int y = 0; y < grid.ny; y += offset) {
                         double v = grid.getScalar(x, y, Scalar.V);
                         if (v < this.tmp_min) {
                             this.tmp_min = v;
@@ -42,18 +43,18 @@ public class ArrowColorPlotStyle extends DisplayStyle {
                     }
                 }
             }
-            
+          
 
-            for (int x = 0; x < grid.nx; x += 2)
+            for (int x = 0; x < grid.nx; x += offset)
             {
-                for (int y = 0; y < grid.ny; y += 2) {
+                for (int y = 0; y < grid.ny; y += offset) {
                     double cx = grid.transXIndex2Coord(x);
                     double cy = grid.transYIndex2Coord(y);
 
                     double view_cx = trafo.transformWorldToViewXCoord(cx, cy, false);
                     double view_cy = trafo.transformWorldToViewYCoord(cx, cy, false);
 
-                    if (grid.getType(x, y) <= GridNodeType.SOLID) {
+                    //if (grid.getType(x, y) <= GridNodeType.SOLID) {
 
                         double v = grid.getScalar(x, y, Scalar.V);
                         if (v < min) {
@@ -85,7 +86,7 @@ public class ArrowColorPlotStyle extends DisplayStyle {
                         g.drawLine(x1, y1, x1 - dx1, y1 - dy1);
                         g.drawLine(x1, y1, x1 - dx2, y1 - dy2);
                     }
-                }
+                //}
             }
         }
     }
