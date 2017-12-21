@@ -15,7 +15,7 @@ public class SolverFactory {
 
     private SolverFactory() {
         builderSet.put(LBMNavierStokesSolver.class.getSimpleName(), new LBMNavierStokesBuilder());
-        //builderSet.put(LBMFreeSurfaceSolver.class.getSimpleName(), new LBMFreeSurfaceBuilder());
+        builderSet.put(LBMFreeSurfaceSolver.class.getSimpleName(), new LBMFreeSurfaceBuilder());
         builderSet.put(LBMTemperatureSolver.class.getSimpleName(), new LBMTemperatureBuilder());
         builderSet.put(LBMShallowWaterSolver.class.getSimpleName(), new LBMShallowWaterBuilder());
         //builderSet.put(AcmSolver.class.getSimpleName(), new AcmBuilder());

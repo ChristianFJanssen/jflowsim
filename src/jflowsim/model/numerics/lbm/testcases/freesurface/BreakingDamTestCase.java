@@ -10,18 +10,18 @@ public class BreakingDamTestCase extends TestCase {
 
     public UniformGrid getGrid() {
 
-        LBMFreeSurfaceGrid grid = new LBMFreeSurfaceGrid(0.5 /* length */, 0.5 /* width */, 0.005 /* dx */);
+        LBMFreeSurfaceGrid grid = new LBMFreeSurfaceGrid(2.5 /* length */, 0.5 /* width */, 0.005 /* dx */);
 
         grid.testcase = this.getClass().getSimpleName();
 
-        grid.setLBParameters(0.05 /* nue_lbm */, 0.0 /* forcingX */, -0.0002 /* forcingY */);
+        grid.setLBParameters(0.005 /* nue_lbm */, 0.0 /* forcingX */, -0.0002 /* forcingY */);
 
         for (int i = 0; i < grid.nx * grid.ny; i++) {
             grid.type[i] = GridNodeType.GAS;
         }
 
-        int damWidth = (int) (0.5 * grid.nx);
-        int damHeight = (int) (1.0 * grid.ny);
+        int damWidth = (int) (0.25 * grid.nx);
+        int damHeight = (int) (0.8 * grid.ny);
 
         for (int x = 0; x < damWidth; x++) {
             for (int y = 0; y < damHeight; y++) {

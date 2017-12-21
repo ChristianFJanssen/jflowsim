@@ -86,6 +86,8 @@ public abstract class LBMUniformGrid extends UniformGrid {
     public double getDensityTemp(int x, int y) {
 
         int nodeIndex = (y * this.nx + x) * 9;
+        
+        if( this.getType(x,y) == GridNodeType.GAS ) return 1.0;
 
         return this.ftemp[nodeIndex + LbEQ.ZERO]
                 + this.ftemp[nodeIndex + LbEQ.E]
@@ -101,6 +103,8 @@ public abstract class LBMUniformGrid extends UniformGrid {
     public double getVeloX(int x, int y) {
 
         int nodeIndex = (y * this.nx + x) * 9;
+        
+        if( this.getType(x,y) == GridNodeType.GAS ) return 0.0;
 
         return (this.f[nodeIndex + LbEQ.E]
                 - this.f[nodeIndex + LbEQ.W]
@@ -113,6 +117,8 @@ public abstract class LBMUniformGrid extends UniformGrid {
     public double getVeloY(int x, int y) {
 
         int nodeIndex = (y * this.nx + x) * 9;
+        
+        if( this.getType(x,y) == GridNodeType.GAS ) return 0.0;
 
         return (+this.f[nodeIndex + LbEQ.N]
                 - this.f[nodeIndex + LbEQ.S]
